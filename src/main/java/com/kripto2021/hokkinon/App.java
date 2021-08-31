@@ -5,17 +5,27 @@
  */
 package com.kripto2021.hokkinon;
 
+import java.util.*;
+import java.io.*;
+
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author PERSONAL
  */
 public class App extends javax.swing.JFrame {
-
+    private File inputFile;
+    private Scanner fileReader;
     /**
      * Creates new form App
      */
     public App() {
         initComponents();
+        
+        this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Affine"));
+        this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Playfair"));
     }
 
     /**
@@ -27,10 +37,10 @@ public class App extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFileChooser1 = new javax.swing.JFileChooser();
+        uploadFile = new javax.swing.JFileChooser();
         algorithmChoiceComboBox = new javax.swing.JComboBox<>();
         cipherteksTextAreaContainer = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        cipherteksTextArea = new javax.swing.JTextArea();
         plainteksTextAreaContainer = new javax.swing.JScrollPane();
         plainteksTextArea = new javax.swing.JTextArea();
         key = new javax.swing.JTextField();
@@ -43,22 +53,24 @@ public class App extends javax.swing.JFrame {
         savePlainteksButton = new javax.swing.JButton();
         uploadCipherteksButton = new javax.swing.JButton();
 
+        uploadFile.setName("uploadFile"); // NOI18N
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hokkinon");
         setName("App"); // NOI18N
         setResizable(false);
         setSize(new java.awt.Dimension(0, 0));
 
-        algorithmChoiceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        algorithmChoiceComboBox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         algorithmChoiceComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 algorithmChoiceComboBoxActionPerformed(evt);
             }
         });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        cipherteksTextAreaContainer.setViewportView(jTextArea1);
+        cipherteksTextArea.setColumns(20);
+        cipherteksTextArea.setRows(5);
+        cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
 
         plainteksTextArea.setColumns(20);
         plainteksTextArea.setRows(5);
@@ -66,11 +78,6 @@ public class App extends javax.swing.JFrame {
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
 
         key.setText("Key");
-        key.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                keyActionPerformed(evt);
-            }
-        });
 
         plainteksLabel.setText("plainteks:");
 
@@ -178,12 +185,24 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
-    private void keyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_keyActionPerformed
-
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
         // TODO add your handling code here:
+        try {
+            this.inputFile = null;
+            this.fileReader = null;
+            
+            this.uploadFile.showOpenDialog(this);
+            this.inputFile = uploadFile.getSelectedFile();
+            System.out.println(this.inputFile.getPath());
+            System.out.println(this.inputFile.getAbsolutePath());
+            System.out.println(this.inputFile.getParent());
+            System.out.println(this.inputFile.getName());
+            
+            this.fileReader = new Scanner(this.inputFile);
+        }
+        catch (Exception e) {
+            
+        }
     }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
 
     /**
@@ -222,10 +241,9 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> algorithmChoiceComboBox;
+    private javax.swing.JComboBox<ComboBoxItem> algorithmChoiceComboBox;
+    private javax.swing.JTextArea cipherteksTextArea;
     private javax.swing.JScrollPane cipherteksTextAreaContainer;
-    private javax.swing.JFileChooser jFileChooser1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField key;
     private javax.swing.JLabel keyLabel;
     private javax.swing.JLabel plainteksLabel;
@@ -236,6 +254,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton saveCipherteksButton;
     private javax.swing.JButton savePlainteksButton;
     private javax.swing.JButton uploadCipherteksButton;
+    private javax.swing.JFileChooser uploadFile;
     private javax.swing.JButton uploadPlainteksButton;
     // End of variables declaration//GEN-END:variables
 }
