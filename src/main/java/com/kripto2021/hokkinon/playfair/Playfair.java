@@ -90,10 +90,6 @@ public class Playfair {
         // convert the text to bigrams;
         for(int i = 0; i < text.length(); i++) {
             String temp = "";
-            if (text.charAt(i) == ' ') {
-                i++;
-                continue;
-            }
             if (text.charAt(i) == 'J' || text.charAt(i) == 'j') temp += "i";
             else temp += text.charAt(i);
                 
