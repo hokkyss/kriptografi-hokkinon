@@ -5,11 +5,9 @@
  */
 package com.kripto2021.hokkinon;
 
-import java.util.*;
+import com.kripto2021.hokkinon.affine.*;
 import java.io.*;
-
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.*;
 
 /**
  *
@@ -182,7 +180,18 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void algorithmChoiceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmChoiceComboBoxActionPerformed
-        // TODO add your handling code here:
+        ComboBoxItem selected = (ComboBoxItem) this.algorithmChoiceComboBox.getSelectedItem();
+        
+        System.out.println(selected);
+        if (selected.value().equals("Affine")) {
+            this.popUp.removeAll();
+            this.popUp.revalidate();
+            this.popUp.repaint();
+
+            this.popUp.add(new AffinePanel());
+            this.popUp.revalidate();
+            this.popUp.repaint();
+        }
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed

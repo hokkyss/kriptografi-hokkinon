@@ -11,9 +11,16 @@ package com.kripto2021.hokkinon;
  */
 public class ComboBoxItem {
     private final String label;
-
+    
     ComboBoxItem(String label) {
         this.label = label;
+    }
+    
+    /**
+     * @return "Affine" or "Playfair" or "Viginere Standard" or "Auto-key Viginere", ....
+     */
+    public String value() {
+        return this.label;
     }
     
     @Override
