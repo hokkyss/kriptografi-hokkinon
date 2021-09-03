@@ -71,7 +71,7 @@ public class Viginere {
     public boolean[][] getValid(){ return this.valid; }
 
     //Encrypt
-    public String Encrypt(String plaintext, String key, boolean isAutokey, boolean includeSymbols) {
+    public String encrypt(String plaintext, String key, boolean isAutokey, boolean includeSymbols) {
         StringBuilder str = new StringBuilder();
         int keysz = key.length();
         int textsz = plaintext.length();

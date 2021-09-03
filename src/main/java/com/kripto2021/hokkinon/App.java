@@ -95,7 +95,7 @@ public class App extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 if(validateKey()){
-                    cipherteksTextArea.setText(viginere.Encrypt(plainteksTextArea.getText(), key.getText(), false, true));
+                    cipherteksTextArea.setText(viginere.encrypt(plainteksTextArea.getText(), key.getText(), false, true));
                 }
 
             }
