@@ -66,10 +66,10 @@ public class Viginere {
     
     private char encode(char c, char key) {
         if (this.size != 256) {
-            return this.matrix[key - 'A'][c - 'A'];
-        } else {
-            if ('A' <= c && c <= 'Z') return this.matrix[key][c];
+            if ('A' <= c && c <= 'Z') return this.matrix[key - 'A'][c - 'A'];
             return c;
+        } else {
+            return this.matrix[key][c];
         }
     }
     
