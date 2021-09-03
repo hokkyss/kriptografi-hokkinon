@@ -35,7 +35,6 @@ public class Viginere {
 
                 for(int k=0; k<this.size; k++){
                     checkValid(i,k);
-                    checkValid(k,j);
                 }
             }else{
                 this.valid[i][j] = false;
@@ -48,9 +47,6 @@ public class Viginere {
     public void checkValid(int i, int j){
         this.valid[i][j] =  (this.matrix[i][j]!=' ');
         for(int k=0; k<this.size; k++){
-            if(k!=i){
-                this.valid[i][j] = this.valid[i][j] && (this.matrix[k][j] != this.matrix[i][j]);
-            }
             if(k!=j){
                 this.valid[i][j] = this.valid[i][j] && (this.matrix[i][k] != this.matrix[i][j]);
             }
@@ -67,12 +63,21 @@ public class Viginere {
     }
     public boolean[][] getValid(){ return this.valid; }
     //Encrypt
-    public String Encrypt(String plaintext, String key, boolean isAutokey, boolean includeSymbols){
+    public String encrypt(String plaintext, String key, boolean isAutokey, boolean includeSymbols){
         StringBuilder str = new StringBuilder();
+        StringBuilder cpy = new StringBuilder();
         int keysz = key.length();
         int textsz = plaintext.length();
         if(this.size != 256) {
-            String textCopy = plaintext.toUpperCase();
+            plaintext = plaintext.toUpperCase();
+            for(int i=0; i<textsz; i++){
+                char c = plaintext.charAt(i);
+                if(('A'<=c && c<='Z') || includeSymbols){
+                    cpy.append(c);
+                }
+            }
+            String textCopy = cpy.toString();
+            textsz = textCopy.length();
             String keyCopy = key.toUpperCase();
             for (int idx = 0; idx < textsz; idx++) {
                 char c = textCopy.charAt(idx);
@@ -86,7 +91,7 @@ public class Viginere {
                     }else{
                         str.append(this.matrix[keyCopy.charAt(idx % keysz) - 'A'][c - 'A']);
                     }
-                }else if(includeSymbols){
+                }else{
                     str.append(c);
                 }
             }

@@ -32,6 +32,8 @@ public class App extends javax.swing.JFrame {
         
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Affine"));
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Playfair"));
+        this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Viginere"));
+        this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Enigma"));
     }
 
     /**
@@ -95,7 +97,7 @@ public class App extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 if(validateKey()){
-                    cipherteksTextArea.setText(viginere.Encrypt(plainteksTextArea.getText(), key.getText(), false, true));
+                    cipherteksTextArea.setText(viginere.encrypt(plainteksTextArea.getText(), key.getText(), false, false));
                 }
 
             }
@@ -240,7 +242,9 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void algorithmChoiceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmChoiceComboBoxActionPerformed
-        // TODO add your handling code here:
+        String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
+        System.out.println(chosen + " chosen");
+        refreshPopup(chosen);
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -319,6 +323,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton uploadCipherteksButton;
     private javax.swing.JFileChooser uploadFile;
     private javax.swing.JButton uploadPlainteksButton;
+    // End of variables declaration//GEN-END:variables
 
     private javax.swing.JTextField[][] viginereMatrix;
     private Viginere viginere;
@@ -340,13 +345,19 @@ public class App extends javax.swing.JFrame {
             }
         }
     }
-    public boolean validateKey(){
-        boolean ret = (this.key.getText().length()>0);
-        for(int i=0; i<this.key.getText().length(); i++){
+    public boolean validateKey() {
+        boolean ret = (this.key.getText().length() > 0);
+        for (int i = 0; i < this.key.getText().length(); i++) {
             char c = this.key.getText().charAt(i);
-            ret = ret && ('A'<=c && c<='Z');
+            ret = ret && ('A' <= c && c <= 'Z');
         }
         return ret;
     }
-    // End of variables declaration//GEN-END:variables
+    public void refreshPopup(String chosen){
+        for(int i=0; i<26; i++){
+            for(int j=0; j<26; j++){
+                viginereMatrix[i][j].setVisible(chosen.equals("Viginere"));
+            }
+        }
+    }
 }
