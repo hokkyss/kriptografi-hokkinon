@@ -42,7 +42,7 @@ public class Utils {
         StringBuilder builder = new StringBuilder();
         
         for(char c: caps.toCharArray()){
-            if ((int)c >= 65 && (int)c <= 90) {
+            if (c >= 'A' && c <= 'Z') {
                 builder.append(c);
             }
         }
