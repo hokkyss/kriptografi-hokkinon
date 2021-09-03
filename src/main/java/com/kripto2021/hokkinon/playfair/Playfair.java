@@ -13,11 +13,15 @@ import utils.*;
  * @author PERSONAL
  */
 public class Playfair {
-    private static final String all = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
+    public static final String all = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
     private String keyString;
 
     public Playfair(String keyString) {
         this.keyString = keyString;
+    }
+    
+    public String getKey() {
+        return this.keyString;
     }
     
     public void setKey(String key) {
@@ -25,6 +29,8 @@ public class Playfair {
     }
 
     public static String getKeyFrom(String s) {
+        if (s.equals("")) return "";
+
         String text = Utils.cleanString(s);
         boolean[] isAdded = new boolean[26];
         StringBuilder temp = new StringBuilder("");
@@ -82,6 +88,7 @@ public class Playfair {
     }
     
     public String encrypt(String s) {
+        if (this.keyString.equals("")) return "";
         String text = Utils.cleanString(s);
         ArrayList<String> bigrams = new ArrayList<>();
         
@@ -106,5 +113,12 @@ public class Playfair {
             encrypted.append(this.encode(twoChars));
         }
         return encrypted.toString();
+    }
+    
+    public String decrypt(String s) {
+        if (this.keyString.equals("")) return "";
+        String text = Utils.cleanString(s);
+        
+        return "";
     }
 }

@@ -32,8 +32,9 @@ public class PlayfairTest {
     @org.junit.jupiter.api.Test
     public void testEncrypt() {
         System.out.println("encrypt");
-        String text = "TemuiIbuNantiMalam";
-        Playfair instance = new Playfair("IALNGESHPUBCDFKMOQRTVWXYZ");
+        String text = "temui ibu nanti malam";
+        Playfair instance = new Playfair(Playfair.getKeyFrom("jalan ganesha sepuluh"));
+        
         String expResult = "MUTELVEMPGLGMGOINLQV";
         
         String result = instance.encrypt(text);

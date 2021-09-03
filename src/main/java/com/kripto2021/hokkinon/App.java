@@ -21,7 +21,6 @@ public class App extends javax.swing.JFrame {
     private ComboBoxItem chosenAlgorithm;
     
     private Playfair playfair = new Playfair("");
-
     private boolean isEncrypting = true;
     
     private javax.swing.JTextField[][] playfairKey;
@@ -497,6 +496,9 @@ public class App extends javax.swing.JFrame {
         this.chosenAlgorithm = selected;
 
         this.popUpPlayfair.setVisible(selected.value().equalsIgnoreCase("playfair"));
+        
+        if (this.isEncrypting) this.encrypt();
+        else this.decrypt();
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -521,25 +523,28 @@ public class App extends javax.swing.JFrame {
 
     private void onChangePlaintext(DocumentEvent e) {
         if (!this.isEncrypting) return;
-        System.out.println("onChangePlaintext");
+        
+        // isEncrypting
+        this.encrypt();
     }
 
     private void onChangeCiphertext(DocumentEvent e) {
         if (this.isEncrypting) return;
-        System.out.println("onChangeCiphertext");
+        
+        // isDecrypting
+        this.decrypt();
     }
 
     private void onChangeKey(DocumentEvent e) {
-        System.out.println("onChangeKey");
-        if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
-            String key = Playfair.getKeyFrom(this.key.getText());
-            this.playfair.setKey(key);
-            
-            if (this.isEncrypting) {
-                this.cipherteksTextArea.setText(this.playfair.encrypt(this.plainteksTextArea.getText()));
-            } else {
-                // decrypting
-            }
+        // generate keys
+        String playfairkey = Playfair.getKeyFrom(this.key.getText());
+        this.playfair.setKey(playfairkey);
+        this.setPlayfairKeys();
+        
+        if (this.isEncrypting) {
+            this.encrypt();
+        } else {
+            this.decrypt();
         }
     }
 
@@ -588,6 +593,25 @@ public class App extends javax.swing.JFrame {
                 new App().setVisible(true);
             }
         });
+    }
+    
+    private void setPlayfairKeys() {
+        if (this.playfair.getKey().equals("")) return;
+        
+        for(int i = 0; i < 5; i++) {
+            for(int j = 0; j < 5; j++) {
+                this.playfairKey[i][j].setText(String.valueOf(this.playfair.getKey().charAt((5 * i) + j)));
+            }
+        }
+    }
+    
+    private void encrypt() {
+        if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
+            this.cipherteksTextArea.setText(this.playfair.encrypt(this.plainteksTextArea.getText()));
+        }
+    }
+    
+    private void decrypt() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
