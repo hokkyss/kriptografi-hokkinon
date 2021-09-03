@@ -5,6 +5,7 @@
  */
 package com.kripto2021.hokkinon;
 
+import com.kripto2021.hokkinon.playfair.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.event.DocumentEvent;
@@ -17,6 +18,11 @@ import javax.swing.event.DocumentListener;
 public class App extends javax.swing.JFrame {
     private File inputFile;
     private Scanner fileReader;
+    private ComboBoxItem chosenAlgorithm;
+    
+    private Playfair playfair = new Playfair("");
+
+    private boolean isEncrypting = true;
     
     private javax.swing.JTextField[][] playfairKey;
     
@@ -129,6 +135,7 @@ public class App extends javax.swing.JFrame {
         cipherteksTextArea.setEditable(false);
         cipherteksTextArea.setColumns(20);
         cipherteksTextArea.setRows(5);
+        cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
         cipherteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -143,11 +150,11 @@ public class App extends javax.swing.JFrame {
                 onChangeCiphertext(e);
             }
         });
-        cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
 
         plainteksTextArea.setColumns(20);
         plainteksTextArea.setRows(5);
         plainteksTextArea.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        plainteksTextAreaContainer.setViewportView(plainteksTextArea);
         plainteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -162,7 +169,6 @@ public class App extends javax.swing.JFrame {
                 onChangePlaintext(e);
             }
         });
-        plainteksTextAreaContainer.setViewportView(plainteksTextArea);
 
         key.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -178,7 +184,6 @@ public class App extends javax.swing.JFrame {
                 onChangeKey(e);
             }
         });
-        cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
 
         plainteksLabel.setText("plainteks:");
 
@@ -488,7 +493,9 @@ public class App extends javax.swing.JFrame {
 
     private void algorithmChoiceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmChoiceComboBoxActionPerformed
         ComboBoxItem selected = (ComboBoxItem)this.algorithmChoiceComboBox.getSelectedItem();
-        
+
+        this.chosenAlgorithm = selected;
+
         this.popUpPlayfair.setVisible(selected.value().equalsIgnoreCase("playfair"));
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
@@ -513,25 +520,39 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
 
     private void onChangePlaintext(DocumentEvent e) {
+        if (!this.isEncrypting) return;
         System.out.println("onChangePlaintext");
     }
 
     private void onChangeCiphertext(DocumentEvent e) {
+        if (this.isEncrypting) return;
         System.out.println("onChangeCiphertext");
     }
 
     private void onChangeKey(DocumentEvent e) {
         System.out.println("onChangeKey");
+        if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
+            String key = Playfair.getKeyFrom(this.key.getText());
+            this.playfair.setKey(key);
+            
+            if (this.isEncrypting) {
+                this.cipherteksTextArea.setText(this.playfair.encrypt(this.plainteksTextArea.getText()));
+            } else {
+                // decrypting
+            }
+        }
     }
 
     private void encryptRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encryptRadioButtonActionPerformed
-        this.plainteksTextArea.setEditable(this.encryptRadioButton.isSelected());
-        this.cipherteksTextArea.setEditable(!this.encryptRadioButton.isSelected());
+        this.isEncrypting = this.encryptRadioButton.isSelected();
+        this.plainteksTextArea.setEditable(this.isEncrypting);
+        this.cipherteksTextArea.setEditable(!this.isEncrypting);
     }//GEN-LAST:event_encryptRadioButtonActionPerformed
 
     private void decryptRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptRadioButtonActionPerformed
-        this.plainteksTextArea.setEditable(!this.decryptRadioButton.isSelected());
-        this.cipherteksTextArea.setEditable(this.decryptRadioButton.isSelected());
+        this.isEncrypting = !this.decryptRadioButton.isSelected();
+        this.plainteksTextArea.setEditable(this.isEncrypting);
+        this.cipherteksTextArea.setEditable(!this.isEncrypting);
     }//GEN-LAST:event_decryptRadioButtonActionPerformed
 
     /**

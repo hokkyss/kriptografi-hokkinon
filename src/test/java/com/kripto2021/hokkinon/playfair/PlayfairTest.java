@@ -34,10 +34,9 @@ public class PlayfairTest {
         System.out.println("encrypt");
         String text = "TemuiIbuNantiMalam";
         Playfair instance = new Playfair("IALNGESHPUBCDFKMOQRTVWXYZ");
-        String expResult = "MutelvEmpGlgmgOinlqv";
+        String expResult = "MUTELVEMPGLGMGOINLQV";
         
         String result = instance.encrypt(text);
-        System.out.println(instance.encrypt("Temuiibunantimalam"));
         
         assertEquals(expResult, result);
     }

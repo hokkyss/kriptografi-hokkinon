@@ -6,6 +6,7 @@
 package com.kripto2021.hokkinon.playfair;
 
 import java.util.*;
+import utils.*;
 
 /**
  *
@@ -19,7 +20,12 @@ public class Playfair {
         this.keyString = keyString;
     }
     
-    public static String getKeyFrom(String text) {
+    public void setKey(String key) {
+        this.keyString = key;
+    }
+
+    public static String getKeyFrom(String s) {
+        String text = Utils.cleanString(s);
         boolean[] isAdded = new boolean[26];
         StringBuilder temp = new StringBuilder("");
         
@@ -49,10 +55,10 @@ public class Playfair {
     private String encode(String twoChars) {
         char[] res = new char[2];
         
-        int first = this.keyString.indexOf(twoChars.toUpperCase().toCharArray()[0]);
+        int first = this.keyString.indexOf(twoChars.charAt(0));
         int i1 = first / 5, j1 = first % 5;
         
-        int second = this.keyString.indexOf(twoChars.toUpperCase().charAt(1));
+        int second = this.keyString.indexOf(twoChars.charAt(1));
         int i2 = second / 5, j2 = second % 5;
         
         if (i1 == i2) {
@@ -68,15 +74,6 @@ public class Playfair {
             res[1] = this.keyString.charAt(i2 * 5 + j1);
         }
         
-        String low = new String(res).toLowerCase();
-        char[] lowercaseChars = low.toCharArray();
-        
-        // convert both characters to their respective lower/upper case letter
-        for(int i = 0; i <= 1; i++) {
-            if (twoChars.charAt(i) >= 97 && twoChars.charAt(i) <= 122) {
-                res[i] = lowercaseChars[i];
-            }
-        }
         StringBuilder result = new StringBuilder();
         result.append(res[0]);
         result.append(res[1]);
@@ -84,7 +81,8 @@ public class Playfair {
         return result.toString();
     }
     
-    public String encrypt(String text) {
+    public String encrypt(String s) {
+        String text = Utils.cleanString(s);
         ArrayList<String> bigrams = new ArrayList<>();
         
         // convert the text to bigrams;
@@ -94,9 +92,9 @@ public class Playfair {
             else temp += text.charAt(i);
                 
             if (i + 1 >= text.length()) {
-                temp += "x";
+                temp += "X";
             } else if (text.charAt(i + 1) == temp.toUpperCase().charAt(0) || text.charAt(i + 1) == temp.toLowerCase().charAt(0)) {
-                temp += "x";
+                temp += "X";
             } else {
                 temp += text.charAt(++i);
             }
@@ -104,8 +102,8 @@ public class Playfair {
         }
         
         StringBuilder encrypted = new StringBuilder();
-        for(String s: bigrams) {
-            encrypted.append(this.encode(s));
+        for(String twoChars: bigrams) {
+            encrypted.append(this.encode(twoChars));
         }
         return encrypted.toString();
     }
