@@ -129,6 +129,20 @@ public class App extends javax.swing.JFrame {
         cipherteksTextArea.setEditable(false);
         cipherteksTextArea.setColumns(20);
         cipherteksTextArea.setRows(5);
+        cipherteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onChangeCiphertext(e);
+            }
+        });
         cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
 
         plainteksTextArea.setColumns(20);
@@ -149,6 +163,22 @@ public class App extends javax.swing.JFrame {
             }
         });
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
+
+        key.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onChangeKey(e);
+            }
+        });
+        cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
 
         plainteksLabel.setText("plainteks:");
 
@@ -483,7 +513,15 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
 
     private void onChangePlaintext(DocumentEvent e) {
-        System.out.println("aw");
+        System.out.println("onChangePlaintext");
+    }
+
+    private void onChangeCiphertext(DocumentEvent e) {
+        System.out.println("onChangeCiphertext");
+    }
+
+    private void onChangeKey(DocumentEvent e) {
+        System.out.println("onChangeKey");
     }
 
     private void encryptRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encryptRadioButtonActionPerformed
