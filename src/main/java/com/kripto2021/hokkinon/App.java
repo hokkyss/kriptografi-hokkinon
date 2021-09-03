@@ -5,11 +5,10 @@
  */
 package com.kripto2021.hokkinon;
 
-import java.util.*;
 import java.io.*;
-
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -18,6 +17,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class App extends javax.swing.JFrame {
     private File inputFile;
     private Scanner fileReader;
+    
+    private javax.swing.JTextField[][] playfairKey;
+    
     /**
      * Creates new form App
      */
@@ -26,6 +28,33 @@ public class App extends javax.swing.JFrame {
         
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Affine"));
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Playfair"));
+        
+        this.playfairKey = new javax.swing.JTextField[5][5];
+        this.playfairKey[0][0] = this.playfair0_0;
+        this.playfairKey[0][1] = this.playfair0_1;
+        this.playfairKey[0][2] = this.playfair0_2;
+        this.playfairKey[0][3] = this.playfair0_3;
+        this.playfairKey[0][4] = this.playfair0_4;
+        this.playfairKey[1][0] = this.playfair1_0;
+        this.playfairKey[1][1] = this.playfair1_1;
+        this.playfairKey[1][2] = this.playfair1_2;
+        this.playfairKey[1][3] = this.playfair1_3;
+        this.playfairKey[1][4] = this.playfair1_4;
+        this.playfairKey[2][0] = this.playfair2_0;
+        this.playfairKey[2][1] = this.playfair2_1;
+        this.playfairKey[2][2] = this.playfair2_2;
+        this.playfairKey[2][3] = this.playfair2_3;
+        this.playfairKey[2][4] = this.playfair2_4;
+        this.playfairKey[3][0] = this.playfair3_0;
+        this.playfairKey[3][1] = this.playfair3_1;
+        this.playfairKey[3][2] = this.playfair3_2;
+        this.playfairKey[3][3] = this.playfair3_3;
+        this.playfairKey[3][4] = this.playfair3_4;
+        this.playfairKey[4][0] = this.playfair4_0;
+        this.playfairKey[4][1] = this.playfair4_1;
+        this.playfairKey[4][2] = this.playfair4_2;
+        this.playfairKey[4][3] = this.playfair4_3;
+        this.playfairKey[4][4] = this.playfair4_4;
     }
 
     /**
@@ -38,6 +67,7 @@ public class App extends javax.swing.JFrame {
     private void initComponents() {
 
         uploadFile = new javax.swing.JFileChooser();
+        encryptOrDecrypt = new javax.swing.ButtonGroup();
         algorithmChoiceComboBox = new javax.swing.JComboBox<>();
         cipherteksTextAreaContainer = new javax.swing.JScrollPane();
         cipherteksTextArea = new javax.swing.JTextArea();
@@ -48,10 +78,38 @@ public class App extends javax.swing.JFrame {
         keyLabel = new javax.swing.JLabel();
         plainteksLabel1 = new javax.swing.JLabel();
         popUp = new javax.swing.JPanel();
+        popUpPlayfair = new javax.swing.JPanel();
+        playfair0_0 = new javax.swing.JTextField();
+        playfair0_1 = new javax.swing.JTextField();
+        playfair0_2 = new javax.swing.JTextField();
+        playfair0_3 = new javax.swing.JTextField();
+        playfair0_4 = new javax.swing.JTextField();
+        playfair1_0 = new javax.swing.JTextField();
+        playfair1_1 = new javax.swing.JTextField();
+        playfair1_2 = new javax.swing.JTextField();
+        playfair1_3 = new javax.swing.JTextField();
+        playfair1_4 = new javax.swing.JTextField();
+        playfair2_0 = new javax.swing.JTextField();
+        playfair2_1 = new javax.swing.JTextField();
+        playfair2_2 = new javax.swing.JTextField();
+        playfair2_3 = new javax.swing.JTextField();
+        playfair2_4 = new javax.swing.JTextField();
+        playfair3_0 = new javax.swing.JTextField();
+        playfair3_1 = new javax.swing.JTextField();
+        playfair3_2 = new javax.swing.JTextField();
+        playfair3_3 = new javax.swing.JTextField();
+        playfair3_4 = new javax.swing.JTextField();
+        playfair4_0 = new javax.swing.JTextField();
+        playfair4_1 = new javax.swing.JTextField();
+        playfair4_2 = new javax.swing.JTextField();
+        playfair4_3 = new javax.swing.JTextField();
+        playfair4_4 = new javax.swing.JTextField();
         uploadPlainteksButton = new javax.swing.JButton();
         saveCipherteksButton = new javax.swing.JButton();
         savePlainteksButton = new javax.swing.JButton();
         uploadCipherteksButton = new javax.swing.JButton();
+        decryptRadioButton = new javax.swing.JRadioButton();
+        encryptRadioButton = new javax.swing.JRadioButton();
 
         uploadFile.setName("uploadFile"); // NOI18N
 
@@ -68,6 +126,7 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        cipherteksTextArea.setEditable(false);
         cipherteksTextArea.setColumns(20);
         cipherteksTextArea.setRows(5);
         cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
@@ -75,9 +134,21 @@ public class App extends javax.swing.JFrame {
         plainteksTextArea.setColumns(20);
         plainteksTextArea.setRows(5);
         plainteksTextArea.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        plainteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onChangePlaintext(e);
+            }
+        });
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
-
-        key.setText("Key");
 
         plainteksLabel.setText("plainteks:");
 
@@ -85,15 +156,194 @@ public class App extends javax.swing.JFrame {
 
         plainteksLabel1.setText("cipherteks:");
 
+        playfair0_0.setEditable(false);
+        playfair0_0.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair0_1.setEditable(false);
+        playfair0_1.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair0_2.setEditable(false);
+        playfair0_2.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair0_3.setEditable(false);
+        playfair0_3.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair0_4.setEditable(false);
+        playfair0_4.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair1_0.setEditable(false);
+        playfair1_0.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair1_1.setEditable(false);
+        playfair1_1.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair1_2.setEditable(false);
+        playfair1_2.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair1_3.setEditable(false);
+        playfair1_3.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair1_4.setEditable(false);
+        playfair1_4.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair2_0.setEditable(false);
+        playfair2_0.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair2_1.setEditable(false);
+        playfair2_1.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair2_2.setEditable(false);
+        playfair2_2.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair2_3.setEditable(false);
+        playfair2_3.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair2_4.setEditable(false);
+        playfair2_4.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair3_0.setEditable(false);
+        playfair3_0.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair3_1.setEditable(false);
+        playfair3_1.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair3_2.setEditable(false);
+        playfair3_2.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair3_3.setEditable(false);
+        playfair3_3.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair3_4.setEditable(false);
+        playfair3_4.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair4_0.setEditable(false);
+        playfair4_0.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair4_1.setEditable(false);
+        playfair4_1.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair4_2.setEditable(false);
+        playfair4_2.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair4_3.setEditable(false);
+        playfair4_3.setBackground(new java.awt.Color(255, 255, 255));
+
+        playfair4_4.setEditable(false);
+        playfair4_4.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout popUpPlayfairLayout = new javax.swing.GroupLayout(popUpPlayfair);
+        popUpPlayfair.setLayout(popUpPlayfairLayout);
+        popUpPlayfairLayout.setHorizontalGroup(
+            popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(popUpPlayfairLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(playfair4_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair3_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair2_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair1_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair0_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(popUpPlayfairLayout.createSequentialGroup()
+                            .addComponent(playfair0_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair0_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair0_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair0_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(popUpPlayfairLayout.createSequentialGroup()
+                            .addComponent(playfair1_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair1_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair1_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair1_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(popUpPlayfairLayout.createSequentialGroup()
+                            .addComponent(playfair2_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair2_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair2_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair2_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(popUpPlayfairLayout.createSequentialGroup()
+                            .addComponent(playfair3_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(playfair3_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair3_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(playfair3_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(popUpPlayfairLayout.createSequentialGroup()
+                        .addComponent(playfair4_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(playfair4_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(playfair4_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(playfair4_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        popUpPlayfairLayout.setVerticalGroup(
+            popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, popUpPlayfairLayout.createSequentialGroup()
+                .addGap(0, 9, Short.MAX_VALUE)
+                .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(playfair0_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair0_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair0_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair0_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair0_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(playfair1_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair1_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair1_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair1_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair1_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(playfair2_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair2_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair2_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair2_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair2_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(playfair3_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair3_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair3_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair3_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair3_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(popUpPlayfairLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(playfair4_0, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair4_4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair4_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair4_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playfair4_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout popUpLayout = new javax.swing.GroupLayout(popUp);
         popUp.setLayout(popUpLayout);
         popUpLayout.setHorizontalGroup(
             popUpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 433, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, popUpLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(popUpPlayfair, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(106, 106, 106))
         );
         popUpLayout.setVerticalGroup(
             popUpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 377, Short.MAX_VALUE)
+            .addGroup(popUpLayout.createSequentialGroup()
+                .addGap(66, 66, 66)
+                .addComponent(popUpPlayfair, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         uploadPlainteksButton.setText("Upload");
@@ -109,6 +359,24 @@ public class App extends javax.swing.JFrame {
 
         uploadCipherteksButton.setText("Upload");
 
+        encryptOrDecrypt.add(decryptRadioButton);
+        decryptRadioButton.setText("decrypt");
+        decryptRadioButton.setToolTipText("Decrypt ciphertext");
+        decryptRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decryptRadioButtonActionPerformed(evt);
+            }
+        });
+
+        encryptOrDecrypt.add(encryptRadioButton);
+        encryptRadioButton.setSelected(true);
+        encryptRadioButton.setText("encrypt");
+        encryptRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                encryptRadioButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -118,34 +386,36 @@ public class App extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(algorithmChoiceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 266, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                        .addComponent(encryptRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(decryptRadioButton)
+                        .addGap(16, 16, 16))
                     .addComponent(popUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(cipherteksTextAreaContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
                         .addComponent(keyLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(key))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cipherteksTextAreaContainer, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(plainteksTextAreaContainer, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(plainteksLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(uploadPlainteksButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(savePlainteksButton)
+                                .addGap(1, 1, 1))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(plainteksLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(uploadCipherteksButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saveCipherteksButton))
-                            .addComponent(plainteksTextAreaContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(plainteksLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uploadPlainteksButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(savePlainteksButton)
-                        .addGap(1, 1, 1)))
+                                .addComponent(saveCipherteksButton)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -154,27 +424,32 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(plainteksLabel)
-                            .addComponent(uploadPlainteksButton)
-                            .addComponent(savePlainteksButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(uploadPlainteksButton)
+                                .addComponent(savePlainteksButton))
+                            .addComponent(plainteksLabel, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(plainteksTextAreaContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(key)
                             .addComponent(keyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(plainteksLabel1)
-                            .addComponent(saveCipherteksButton)
-                            .addComponent(uploadCipherteksButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(saveCipherteksButton)
+                                .addComponent(uploadCipherteksButton))
+                            .addComponent(plainteksLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cipherteksTextAreaContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(algorithmChoiceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(popUp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(algorithmChoiceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(decryptRadioButton)
+                            .addComponent(encryptRadioButton))
+                        .addGap(18, 18, 18)
+                        .addComponent(popUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -182,7 +457,9 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void algorithmChoiceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmChoiceComboBoxActionPerformed
-        // TODO add your handling code here:
+        ComboBoxItem selected = (ComboBoxItem)this.algorithmChoiceComboBox.getSelectedItem();
+        
+        this.popUpPlayfair.setVisible(selected.value().equalsIgnoreCase("playfair"));
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -204,6 +481,20 @@ public class App extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
+
+    private void onChangePlaintext(DocumentEvent e) {
+        System.out.println("aw");
+    }
+
+    private void encryptRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encryptRadioButtonActionPerformed
+        this.plainteksTextArea.setEditable(this.encryptRadioButton.isSelected());
+        this.cipherteksTextArea.setEditable(!this.encryptRadioButton.isSelected());
+    }//GEN-LAST:event_encryptRadioButtonActionPerformed
+
+    private void decryptRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptRadioButtonActionPerformed
+        this.plainteksTextArea.setEditable(!this.decryptRadioButton.isSelected());
+        this.cipherteksTextArea.setEditable(this.decryptRadioButton.isSelected());
+    }//GEN-LAST:event_decryptRadioButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -244,13 +535,42 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JComboBox<ComboBoxItem> algorithmChoiceComboBox;
     private javax.swing.JTextArea cipherteksTextArea;
     private javax.swing.JScrollPane cipherteksTextAreaContainer;
+    private javax.swing.JRadioButton decryptRadioButton;
+    private javax.swing.ButtonGroup encryptOrDecrypt;
+    private javax.swing.JRadioButton encryptRadioButton;
     private javax.swing.JTextField key;
     private javax.swing.JLabel keyLabel;
     private javax.swing.JLabel plainteksLabel;
     private javax.swing.JLabel plainteksLabel1;
     private javax.swing.JTextArea plainteksTextArea;
     private javax.swing.JScrollPane plainteksTextAreaContainer;
+    private javax.swing.JTextField playfair0_0;
+    private javax.swing.JTextField playfair0_1;
+    private javax.swing.JTextField playfair0_2;
+    private javax.swing.JTextField playfair0_3;
+    private javax.swing.JTextField playfair0_4;
+    private javax.swing.JTextField playfair1_0;
+    private javax.swing.JTextField playfair1_1;
+    private javax.swing.JTextField playfair1_2;
+    private javax.swing.JTextField playfair1_3;
+    private javax.swing.JTextField playfair1_4;
+    private javax.swing.JTextField playfair2_0;
+    private javax.swing.JTextField playfair2_1;
+    private javax.swing.JTextField playfair2_2;
+    private javax.swing.JTextField playfair2_3;
+    private javax.swing.JTextField playfair2_4;
+    private javax.swing.JTextField playfair3_0;
+    private javax.swing.JTextField playfair3_1;
+    private javax.swing.JTextField playfair3_2;
+    private javax.swing.JTextField playfair3_3;
+    private javax.swing.JTextField playfair3_4;
+    private javax.swing.JTextField playfair4_0;
+    private javax.swing.JTextField playfair4_1;
+    private javax.swing.JTextField playfair4_2;
+    private javax.swing.JTextField playfair4_3;
+    private javax.swing.JTextField playfair4_4;
     private javax.swing.JPanel popUp;
+    private javax.swing.JPanel popUpPlayfair;
     private javax.swing.JButton saveCipherteksButton;
     private javax.swing.JButton savePlainteksButton;
     private javax.swing.JButton uploadCipherteksButton;
