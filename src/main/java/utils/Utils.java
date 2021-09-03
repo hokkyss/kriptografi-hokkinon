@@ -48,4 +48,17 @@ public class Utils {
         }
         return builder.toString();
     }
+    
+    public static String splitString(String s) {
+        int len = s.length();
+
+        String[] result = new String[(len + 4) / 5];
+        
+        for(int i = 0; i < (len + 4) / 5; i++) {
+            for(int j = 0; j < 5; j++) {
+                result[i] = result[i] + s.charAt((i * 5) + j);
+            }
+        }
+        return String.join(" ", result);
+    }
 }
