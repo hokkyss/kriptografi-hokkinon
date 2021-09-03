@@ -39,13 +39,10 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="algorithmChoiceComboBox" min="-2" pref="167" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="266" max="32767" attributes="0"/>
-                  </Group>
-                  <Component id="popUp" max="32767" attributes="0"/>
+                  <Component id="algorithmChoiceComboBox" min="-2" pref="167" max="-2" attributes="0"/>
+                  <Component id="popUpViginere" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -94,8 +91,8 @@
                           <Component id="savePlainteksButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="plainteksTextAreaContainer" min="-2" pref="154" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="plainteksTextAreaContainer" min="-2" pref="297" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="key" max="32767" attributes="0"/>
                           <Component id="keyLabel" max="32767" attributes="0"/>
@@ -107,12 +104,12 @@
                           <Component id="uploadCipherteksButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cipherteksTextAreaContainer" min="-2" pref="160" max="-2" attributes="0"/>
+                      <Component id="cipherteksTextAreaContainer" min="-2" pref="298" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Component id="algorithmChoiceComboBox" min="-2" pref="33" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="popUp" min="-2" max="-2" attributes="0"/>
+                      <Component id="popUpViginere" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -168,9 +165,9 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JTextField" name="key">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Key"/>
-      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="keyActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="plainteksLabel">
       <Properties>
@@ -187,17 +184,17 @@
         <Property name="text" type="java.lang.String" value="cipherteks:"/>
       </Properties>
     </Component>
-    <Container class="javax.swing.JPanel" name="popUp">
+    <Container class="javax.swing.JPanel" name="popUpViginere">
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="433" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="757" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="377" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="658" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
