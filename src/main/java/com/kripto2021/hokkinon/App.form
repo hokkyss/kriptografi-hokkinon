@@ -40,7 +40,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="algorithmChoiceComboBox" min="-2" pref="167" max="-2" attributes="0"/>
-                  <Component id="popUp" min="-2" max="-2" attributes="0"/>
+                  <Component id="popUpViginere" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -109,7 +109,7 @@
                   <Group type="102" attributes="0">
                       <Component id="algorithmChoiceComboBox" min="-2" pref="33" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="popUp" min="-2" max="-2" attributes="0"/>
+                      <Component id="popUpViginere" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -165,9 +165,6 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JTextField" name="key">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Key"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="keyActionPerformed"/>
       </Events>
@@ -187,7 +184,7 @@
         <Property name="text" type="java.lang.String" value="cipherteks:"/>
       </Properties>
     </Component>
-    <Container class="javax.swing.JPanel" name="popUp">
+    <Container class="javax.swing.JPanel" name="popUpViginere">
 
       <Layout>
         <DimensionLayout dim="0">

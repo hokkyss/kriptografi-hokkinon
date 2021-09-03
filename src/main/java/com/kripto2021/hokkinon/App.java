@@ -5,17 +5,8 @@
  */
 package com.kripto2021.hokkinon;
 
-import com.kripto2021.hokkinon.viginere.Viginere;
-
-import java.awt.*;
-import java.util.*;
 import java.io.*;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.*;
 
 /**
  *
@@ -29,7 +20,8 @@ public class App extends javax.swing.JFrame {
      */
     public App() {
         initComponents();
-        
+
+        this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Viginere Standard"));
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Affine"));
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Playfair"));
     }
@@ -53,7 +45,7 @@ public class App extends javax.swing.JFrame {
         plainteksLabel = new javax.swing.JLabel();
         keyLabel = new javax.swing.JLabel();
         plainteksLabel1 = new javax.swing.JLabel();
-        popUp = new javax.swing.JPanel();
+        popUpViginere = new javax.swing.JPanel();
         uploadPlainteksButton = new javax.swing.JButton();
         saveCipherteksButton = new javax.swing.JButton();
         savePlainteksButton = new javax.swing.JButton();
@@ -81,28 +73,8 @@ public class App extends javax.swing.JFrame {
         plainteksTextArea.setColumns(20);
         plainteksTextArea.setRows(5);
         plainteksTextArea.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        plainteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                changedUpdate(e);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                changedUpdate(e);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                if(validateKey()){
-                    cipherteksTextArea.setText(viginere.encrypt(plainteksTextArea.getText(), key.getText(), false, true));
-                }
-
-            }
-        });
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
 
-        key.setText("Key");
         key.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 keyActionPerformed(evt);
@@ -115,46 +87,16 @@ public class App extends javax.swing.JFrame {
 
         plainteksLabel1.setText("cipherteks:");
 
-        javax.swing.GroupLayout popUpLayout = new javax.swing.GroupLayout(popUp);
-        popUp.setLayout(popUpLayout);
-        popUpLayout.setHorizontalGroup(
-            popUpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+        javax.swing.GroupLayout popUpViginereLayout = new javax.swing.GroupLayout(popUpViginere);
+        popUpViginere.setLayout(popUpViginereLayout);
+        popUpViginereLayout.setHorizontalGroup(
+            popUpViginereLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 757, Short.MAX_VALUE)
         );
-        popUpLayout.setVerticalGroup(
-            popUpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+        popUpViginereLayout.setVerticalGroup(
+            popUpViginereLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 658, Short.MAX_VALUE)
         );
-
-
-        this.viginere = new Viginere(26);
-        this.viginereMatrix = new JTextField[26][26];
-        for(int i=0; i<26; i++){
-            for(int j=0; j<26; j++) {
-                int iCopy = i, jCopy = j;
-                this.viginereMatrix[i][j] = new JTextField();
-                this.viginereMatrix[i][j].setBounds(25*(j+1), 25*(i+1), 25, 25);
-                this.viginereMatrix[i][j].setText(String.valueOf((char)('A' + (i+j)%26)));
-                this.viginereMatrix[i][j].getDocument().addDocumentListener(new DocumentListener() {
-                    @Override
-                    public void insertUpdate(DocumentEvent e) {
-                        changedUpdate(e);
-                    }
-
-                    @Override
-                    public void removeUpdate(DocumentEvent e) {
-                        changedUpdate(e);
-                    }
-
-                    @Override
-                    public void changedUpdate(DocumentEvent e) {
-                        viginere.setMatrix(iCopy, jCopy, viginereMatrix[iCopy][jCopy].getText());
-                        validateViginereMatrix();
-                    }
-                });
-                this.popUp.add(this.viginereMatrix[i][j]);
-            }
-        }
 
         uploadPlainteksButton.setText("Upload");
         uploadPlainteksButton.addActionListener(new java.awt.event.ActionListener() {
@@ -177,7 +119,7 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(algorithmChoiceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(popUp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(popUpViginere, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -232,7 +174,7 @@ public class App extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(algorithmChoiceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(popUp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(popUpViginere, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -241,6 +183,10 @@ public class App extends javax.swing.JFrame {
 
     private void algorithmChoiceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmChoiceComboBoxActionPerformed
         // TODO add your handling code here:
+        ComboBoxItem selected = (ComboBoxItem)this.algorithmChoiceComboBox.getSelectedItem();
+        if (selected.value().equalsIgnoreCase("Viginere Standard")) {
+            this.popUpViginere.setVisible(true);
+        }
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -313,40 +259,11 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel plainteksLabel1;
     private javax.swing.JTextArea plainteksTextArea;
     private javax.swing.JScrollPane plainteksTextAreaContainer;
-    private javax.swing.JPanel popUp;
+    private javax.swing.JPanel popUpViginere;
     private javax.swing.JButton saveCipherteksButton;
     private javax.swing.JButton savePlainteksButton;
     private javax.swing.JButton uploadCipherteksButton;
     private javax.swing.JFileChooser uploadFile;
     private javax.swing.JButton uploadPlainteksButton;
-
-    private javax.swing.JTextField[][] viginereMatrix;
-    private Viginere viginere;
-
-    public void validateViginereMatrix(){
-        for(int i=0; i<26; i++){
-            for(int j=0; j<26; j++){
-                if(!viginere.getValid()[i][j]){
-                    if(viginereMatrix[i][j].getText().length()==0){
-                        viginereMatrix[i][j].setBackground(Color.RED);
-                    }else{
-                        viginereMatrix[i][j].setBackground(Color.WHITE);
-                        viginereMatrix[i][j].setForeground(Color.RED);
-                    }
-                }else{
-                    viginereMatrix[i][j].setBackground(Color.WHITE);
-                    viginereMatrix[i][j].setForeground(Color.BLACK);
-                }
-            }
-        }
-    }
-    public boolean validateKey(){
-        boolean ret = (this.key.getText().length()>0);
-        for(int i=0; i<this.key.getText().length(); i++){
-            char c = this.key.getText().charAt(i);
-            ret = ret && ('A'<=c && c<='Z');
-        }
-        return ret;
-    }
     // End of variables declaration//GEN-END:variables
 }

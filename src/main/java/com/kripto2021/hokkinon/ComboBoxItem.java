@@ -16,6 +16,10 @@ public class ComboBoxItem {
         this.label = label;
     }
     
+    public String value() {
+        return this.label;
+    }
+    
     @Override
     public String toString() {
         return this.label;
