@@ -109,6 +109,13 @@ public class App extends javax.swing.JFrame {
         playfair4_2 = new javax.swing.JTextField();
         playfair4_3 = new javax.swing.JTextField();
         playfair4_4 = new javax.swing.JTextField();
+        popUpAffine = new javax.swing.JPanel();
+        mTextField = new javax.swing.JTextField();
+        bTextField = new javax.swing.JTextField();
+        mLabel = new javax.swing.JLabel();
+        bLabel = new javax.swing.JLabel();
+        affineDescriptionScrollPane = new javax.swing.JScrollPane();
+        affineDescription = new javax.swing.JTextArea();
         uploadPlainteksButton = new javax.swing.JButton();
         saveCipherteksButton = new javax.swing.JButton();
         savePlainteksButton = new javax.swing.JButton();
@@ -361,6 +368,57 @@ public class App extends javax.swing.JFrame {
                     .addComponent(playfair4_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(playfair4_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
+        popUp.setEnabled(false);
+        popUp.setFocusable(false);
+        popUp.setMaximumSize(new java.awt.Dimension(423, 377));
+        popUp.setMinimumSize(new java.awt.Dimension(423, 377));
+        popUp.setPreferredSize(new java.awt.Dimension(433, 377));
+
+        mTextField.setEditable(false);
+
+        bTextField.setEditable(false);
+
+        mLabel.setBackground(new java.awt.Color(255, 255, 255));
+        mLabel.setText("m: ");
+
+        bLabel.setText("b: ");
+
+        affineDescription.setEditable(false);
+        affineDescription.setColumns(20);
+        affineDescription.setLineWrap(true);
+        affineDescription.setRows(5);
+        affineDescription.setText("Input the key at \"key: \" section.\n\nWrite it in format <m><space><b>, both m and b are integers. Where m is coprime to 26.\n");
+        affineDescription.setWrapStyleWord(true);
+        affineDescription.setEnabled(false);
+        affineDescriptionScrollPane.setViewportView(affineDescription);
+
+        javax.swing.GroupLayout popUpAffineLayout = new javax.swing.GroupLayout(popUpAffine);
+        popUpAffine.setLayout(popUpAffineLayout);
+        popUpAffineLayout.setHorizontalGroup(
+            popUpAffineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(popUpAffineLayout.createSequentialGroup()
+                .addGap(81, 81, 81)
+                .addGroup(popUpAffineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(bLabel)
+                    .addComponent(mLabel)
+                    .addComponent(mTextField)
+                    .addComponent(bTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(affineDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+        );
+        popUpAffineLayout.setVerticalGroup(
+            popUpAffineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(popUpAffineLayout.createSequentialGroup()
+                .addComponent(affineDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addComponent(mLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(bLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout popUpLayout = new javax.swing.GroupLayout(popUp);
@@ -371,13 +429,20 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(popUpPlayfair, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(106, 106, 106))
+            .addGroup(popUpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(popUpAffine, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         popUpLayout.setVerticalGroup(
             popUpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(popUpLayout.createSequentialGroup()
                 .addGap(66, 66, 66)
                 .addComponent(popUpPlayfair, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(popUpAffine, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
         );
 
         uploadPlainteksButton.setText("Upload");
@@ -466,8 +531,8 @@ public class App extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(plainteksTextAreaContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(key)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(key, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(keyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -496,9 +561,11 @@ public class App extends javax.swing.JFrame {
         this.chosenAlgorithm = selected;
 
         this.popUpPlayfair.setVisible(selected.value().equalsIgnoreCase("playfair"));
+        this.popUpAffine.setVisible(selected.value().equalsIgnoreCase("affine"));
         
         if (this.isEncrypting) this.encrypt();
         else this.decrypt();
+        ComboBoxItem selected = (ComboBoxItem) this.algorithmChoiceComboBox.getSelectedItem();        
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -615,7 +682,11 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea affineDescription;
+    private javax.swing.JScrollPane affineDescriptionScrollPane;
     private javax.swing.JComboBox<ComboBoxItem> algorithmChoiceComboBox;
+    private javax.swing.JLabel bLabel;
+    private javax.swing.JTextField bTextField;
     private javax.swing.JTextArea cipherteksTextArea;
     private javax.swing.JScrollPane cipherteksTextAreaContainer;
     private javax.swing.JRadioButton decryptRadioButton;
@@ -623,6 +694,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JRadioButton encryptRadioButton;
     private javax.swing.JTextField key;
     private javax.swing.JLabel keyLabel;
+    private javax.swing.JLabel mLabel;
+    private javax.swing.JTextField mTextField;
     private javax.swing.JLabel plainteksLabel;
     private javax.swing.JLabel plainteksLabel1;
     private javax.swing.JTextArea plainteksTextArea;
@@ -654,6 +727,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField playfair4_4;
     private javax.swing.JPanel popUp;
     private javax.swing.JPanel popUpPlayfair;
+    private javax.swing.JPanel popUpAffine;
     private javax.swing.JButton saveCipherteksButton;
     private javax.swing.JButton savePlainteksButton;
     private javax.swing.JButton uploadCipherteksButton;
