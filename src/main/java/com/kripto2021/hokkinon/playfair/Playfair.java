@@ -145,9 +145,13 @@ public class Playfair {
     }
     
     public String decrypt(String s) {
-        if (this.keyString.equals("")) return "";
-        String text = Utils.cleanString(s);
-        
-        return "";
+        StringBuilder str = new StringBuilder();
+        for(int i=0; i<s.length(); i++){
+            String twoChar = String.valueOf(s.charAt(i));
+            i++;
+            twoChar += String.valueOf(s.charAt(i));
+            str.append(decode(twoChar));
+        }
+        return str.toString();
     }
 }
