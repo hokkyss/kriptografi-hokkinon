@@ -76,9 +76,24 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        cipherteksTextArea.setEditable(false);
         cipherteksTextArea.setColumns(20);
         cipherteksTextArea.setRows(5);
         cipherteksTextAreaContainer.setViewportView(cipherteksTextArea);
+        cipherteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onChangeCiphertext(e);
+            }
+        });
 
         plainteksTextArea.setColumns(20);
         plainteksTextArea.setRows(5);
@@ -94,7 +109,7 @@ public class App extends javax.swing.JFrame {
             }
             @Override
             public void changedUpdate(DocumentEvent e) {
-                encrypt();
+                onChangePlaintext(e);
             }
         });
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
@@ -102,6 +117,21 @@ public class App extends javax.swing.JFrame {
         key.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 keyActionPerformed(evt);
+            }
+        });
+
+        key.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onChangeKey(e);
             }
         });
 
@@ -543,6 +573,19 @@ public class App extends javax.swing.JFrame {
 
         return false;
     }
+
+    private void onChangePlaintext(DocumentEvent e) {
+
+    }
+
+    private void onChangeCiphertext(DocumentEvent e) {
+
+    }
+
+    private void onChangeKey(DocumentEvent e) {
+
+    }
+    
     public void encrypt(){
         if(validateKey()){
             String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
