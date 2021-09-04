@@ -32,7 +32,7 @@ public class Viginere {
             if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) {
                 if ('a' <= c && c <= 'z') this.matrix[i][j] = (char) (c - 'a' + 'A');
                 else this.matrix[i][j] = c;
-                for(int k=0; k<this.size; k++){
+                for (int k = 0; k < this.size; k++) {
                     checkValid(i,k);
                 }
             } else {
@@ -43,10 +43,10 @@ public class Viginere {
             this.valid[i][j] = false;
         }
     }
-    public void checkValid(int i, int j){
-        this.valid[i][j] =  (this.matrix[i][j]!=' ');
-        for(int k=0; k<this.size; k++){
-            if(k!=j){
+    public void checkValid(int i, int j) {
+        this.valid[i][j] = (this.matrix[i][j] != ' ');
+        for (int k = 0; k < this.size; k++) {
+            if(k != j) {
                 this.valid[i][j] = this.valid[i][j] && (this.matrix[i][k] != this.matrix[i][j]);
             }
         }
@@ -63,54 +63,96 @@ public class Viginere {
     }
 
     public boolean[][] getValid(){ return this.valid; }
+    
+    private char encode(char c, char key) {
+        if (this.size != 256) {
+            if ('A' <= c && c <= 'Z') return this.matrix[key - 'A'][c - 'A'];
+            return c;
+        } else {
+            return this.matrix[key][c];
+        }
+    }
+    
+    private char decode(char c, char key) {
+        char[] row = this.matrix[key];
+
+        if (this.size != 256) {
+            if ('A' <= c && c <= 'Z') return c;
+            return (char) ((char) row.toString().indexOf(c) + 'A');
+        }
+        return (char) row.toString().indexOf(c);
+    }
 
     //Encrypt
     public String encrypt(String plaintext, String key, boolean isAutokey, boolean includeSymbols){
-        StringBuilder cpy = new StringBuilder();
-        StringBuilder str = new StringBuilder();
+        StringBuilder plaintextCopy = new StringBuilder();
+        StringBuilder result = new StringBuilder();
+        
         int keysz = key.length();
         int textsz = plaintext.length();
-        if(this.size != 256) {
-            plaintext = plaintext.toUpperCase();
-            for(int i=0; i<textsz; i++){
-                char c = plaintext.charAt(i);
-                if(('A'<=c && c<='Z') || includeSymbols){
-                    cpy.append(c);
-                }
-            }
-            String textCopy = cpy.toString();
-            textsz = textCopy.length();
-            String keyCopy = key.toUpperCase();
-            for (int idx = 0; idx < textsz; idx++) {
-                char c = textCopy.charAt(idx);
-                if('A' <= c && c <= 'Z') {
-                    if(isAutokey) {
-                        if(idx < keysz){
-                            str.append(this.matrix[textCopy.charAt(idx - keysz) - 'A'][c - 'A']);
-                        } else {
-                            str.append(this.matrix[keyCopy.charAt(idx) - 'A'][c - 'A']);
-                        }
-                    } else {
-                        str.append(this.matrix[keyCopy.charAt(idx % keysz) - 'A'][c - 'A']);
-                    }
-                }else{
-                    str.append(c);
-                }
-            }
-        } else {
-            for (int idx = 0; idx < key.length(); idx++) {
-                char c = plaintext.charAt(idx);
-                if (isAutokey) {
-                    if(idx < keysz) {
-                        str.append(this.matrix[plaintext.charAt(idx - keysz)][c]);
-                    } else {
-                        str.append(this.matrix[key.charAt(idx)][c]);
-                    }
-                } else {
-                    str.append(this.matrix[key.charAt(idx % keysz)][c]);
-                }
+        
+        String upperCaseKey = key.toUpperCase();
+        plaintext = plaintext.toUpperCase();
+        
+        for(int i = 0; i < textsz; i++) {
+            char c = plaintext.charAt(i);
+            if (includeSymbols || ('A' <= c && c <= 'Z')) {
+                plaintextCopy.append(c);
             }
         }
-        return str.toString();
+        
+        plaintext = plaintextCopy.toString();
+        textsz = plaintext.length();
+        
+        for(int i = 0; i < textsz; i++) {
+            char c = plaintext.charAt(i);
+        
+            if (isAutokey) {
+                if (i > keysz) {
+                    result.append(this.encode(c, plaintext.charAt(i - keysz)));
+                } else {
+                    result.append(this.encode(c, upperCaseKey.charAt(i)));
+                }
+            } else {
+                result.append(this.encode(c, upperCaseKey.charAt(i % keysz)));
+            }
+        }
+        return result.toString();
+    }
+    
+    public String decrypt(String ciphertext, String key, boolean isAutokey, boolean includeSymbols) {
+        StringBuilder ciphertextCopy = new StringBuilder();
+        StringBuilder result = new StringBuilder();
+        
+        int keysz = key.length();
+        int textsz = ciphertext.length();
+        
+        String upperCaseKey = key.toUpperCase();
+        ciphertext = ciphertext.toUpperCase();
+        
+        for(int i = 0; i < textsz; i++) {
+            char c = ciphertext.charAt(i);
+            if (includeSymbols || ('A' <= c && c <= 'Z')) {
+                ciphertextCopy.append(c);
+            }
+        }
+        
+        ciphertext = ciphertextCopy.toString();
+        textsz = ciphertext.length();
+        
+        for(int i = 0; i < textsz; i++) {
+            char c = ciphertext.charAt(i);
+        
+            if (isAutokey) {
+                if (i > keysz) {
+                    result.append(this.decode(c, ciphertext.charAt(i - keysz)));
+                } else {
+                    result.append(this.decode(c, upperCaseKey.charAt(i)));
+                }
+            } else {
+                result.append(this.decode(c, upperCaseKey.charAt(i % keysz)));
+            }
+        }
+        return result.toString();
     }
 }

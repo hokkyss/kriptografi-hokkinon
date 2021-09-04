@@ -10,12 +10,12 @@ import com.kripto2021.hokkinon.enigma.EnigmaPath;
 import com.kripto2021.hokkinon.viginere.Viginere;
 import utils.Utils;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -472,16 +472,16 @@ public class App extends javax.swing.JFrame {
     private Enigma enigma;
 
     public void validateViginereMatrix(){
-        for(int i=0; i<26; i++){
-            for(int j=0; j<26; j++){
-                if(!viginere.getValid()[i][j]){
-                    if(viginereMatrix[i][j].getText().length()==0){
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < 26; j++) {
+                if (!viginere.getValid()[i][j]) {
+                    if (viginereMatrix[i][j].getText().length() == 0) {
                         viginereMatrix[i][j].setBackground(Color.RED);
-                    }else{
+                    } else {
                         viginereMatrix[i][j].setBackground(Color.WHITE);
                         viginereMatrix[i][j].setForeground(Color.RED);
                     }
-                }else{
+                } else {
                     viginereMatrix[i][j].setBackground(Color.WHITE);
                     viginereMatrix[i][j].setForeground(Color.BLACK);
                 }
@@ -585,7 +585,7 @@ public class App extends javax.swing.JFrame {
     private void onChangeKey(DocumentEvent e) {
 
     }
-    
+
     public void encrypt(){
         if(validateKey()){
             String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
