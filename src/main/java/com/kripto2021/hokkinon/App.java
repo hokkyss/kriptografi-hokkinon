@@ -5,7 +5,6 @@
  */
 package com.kripto2021.hokkinon;
 
-import com.kripto2021.hokkinon.affine.*;
 import java.io.*;
 import java.util.*;
 
@@ -46,6 +45,13 @@ public class App extends javax.swing.JFrame {
         keyLabel = new javax.swing.JLabel();
         plainteksLabel1 = new javax.swing.JLabel();
         popUp = new javax.swing.JPanel();
+        popUpAffine = new javax.swing.JPanel();
+        mTextField = new javax.swing.JTextField();
+        bTextField = new javax.swing.JTextField();
+        mLabel = new javax.swing.JLabel();
+        bLabel = new javax.swing.JLabel();
+        affineDescriptionScrollPane = new javax.swing.JScrollPane();
+        affineDescription = new javax.swing.JTextArea();
         uploadPlainteksButton = new javax.swing.JButton();
         saveCipherteksButton = new javax.swing.JButton();
         savePlainteksButton = new javax.swing.JButton();
@@ -75,23 +81,75 @@ public class App extends javax.swing.JFrame {
         plainteksTextArea.setMargin(new java.awt.Insets(0, 0, 0, 0));
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
 
-        key.setText("Key");
-
         plainteksLabel.setText("plainteks:");
 
         keyLabel.setText("key:");
 
         plainteksLabel1.setText("cipherteks:");
 
+        popUp.setEnabled(false);
+        popUp.setFocusable(false);
+        popUp.setMaximumSize(new java.awt.Dimension(423, 377));
+        popUp.setMinimumSize(new java.awt.Dimension(423, 377));
+        popUp.setPreferredSize(new java.awt.Dimension(433, 377));
+
+        mLabel.setText("m: ");
+
+        bLabel.setText("b: ");
+
+        affineDescription.setEditable(false);
+        affineDescription.setColumns(20);
+        affineDescription.setLineWrap(true);
+        affineDescription.setRows(5);
+        affineDescription.setText("Input the key at \"key: \" section.\n\nWrite it in format <m><space><b>, both m and b are integers. Where m is coprime to 26.\n");
+        affineDescription.setWrapStyleWord(true);
+        affineDescription.setEnabled(false);
+        affineDescriptionScrollPane.setViewportView(affineDescription);
+
+        javax.swing.GroupLayout popUpAffineLayout = new javax.swing.GroupLayout(popUpAffine);
+        popUpAffine.setLayout(popUpAffineLayout);
+        popUpAffineLayout.setHorizontalGroup(
+            popUpAffineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(popUpAffineLayout.createSequentialGroup()
+                .addGap(81, 81, 81)
+                .addGroup(popUpAffineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(bLabel)
+                    .addComponent(mLabel)
+                    .addComponent(mTextField)
+                    .addComponent(bTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(affineDescriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+        );
+        popUpAffineLayout.setVerticalGroup(
+            popUpAffineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(popUpAffineLayout.createSequentialGroup()
+                .addComponent(affineDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addComponent(mLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(bLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(96, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout popUpLayout = new javax.swing.GroupLayout(popUp);
         popUp.setLayout(popUpLayout);
         popUpLayout.setHorizontalGroup(
             popUpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 433, Short.MAX_VALUE)
+            .addGroup(popUpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(popUpAffine, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         popUpLayout.setVerticalGroup(
             popUpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 377, Short.MAX_VALUE)
+            .addGroup(popUpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(popUpAffine, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         uploadPlainteksButton.setText("Upload");
@@ -114,11 +172,9 @@ public class App extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(algorithmChoiceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 266, Short.MAX_VALUE))
-                    .addComponent(popUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                    .addComponent(algorithmChoiceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(popUp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -160,7 +216,7 @@ public class App extends javax.swing.JFrame {
                         .addComponent(plainteksTextAreaContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(key)
+                            .addComponent(key, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(keyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -182,16 +238,7 @@ public class App extends javax.swing.JFrame {
     private void algorithmChoiceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmChoiceComboBoxActionPerformed
         ComboBoxItem selected = (ComboBoxItem) this.algorithmChoiceComboBox.getSelectedItem();
         
-        System.out.println(selected);
-        if (selected.value().equals("Affine")) {
-            this.popUp.removeAll();
-            this.popUp.revalidate();
-            this.popUp.repaint();
-
-            this.popUp.add(new AffinePanel());
-            this.popUp.revalidate();
-            this.popUp.repaint();
-        }
+        this.popUpAffine.setVisible(selected.value().equalsIgnoreCase("affine"));
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -250,16 +297,23 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea affineDescription;
+    private javax.swing.JScrollPane affineDescriptionScrollPane;
     private javax.swing.JComboBox<ComboBoxItem> algorithmChoiceComboBox;
+    private javax.swing.JLabel bLabel;
+    private javax.swing.JTextField bTextField;
     private javax.swing.JTextArea cipherteksTextArea;
     private javax.swing.JScrollPane cipherteksTextAreaContainer;
     private javax.swing.JTextField key;
     private javax.swing.JLabel keyLabel;
+    private javax.swing.JLabel mLabel;
+    private javax.swing.JTextField mTextField;
     private javax.swing.JLabel plainteksLabel;
     private javax.swing.JLabel plainteksLabel1;
     private javax.swing.JTextArea plainteksTextArea;
     private javax.swing.JScrollPane plainteksTextAreaContainer;
     private javax.swing.JPanel popUp;
+    private javax.swing.JPanel popUpAffine;
     private javax.swing.JButton saveCipherteksButton;
     private javax.swing.JButton savePlainteksButton;
     private javax.swing.JButton uploadCipherteksButton;
