@@ -5,7 +5,10 @@
  */
 package com.kripto2021.hokkinon;
 
+import com.kripto2021.hokkinon.enigma.Enigma;
+import com.kripto2021.hokkinon.enigma.EnigmaPath;
 import com.kripto2021.hokkinon.viginere.Viginere;
+import utils.Utils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -91,9 +94,7 @@ public class App extends javax.swing.JFrame {
             }
             @Override
             public void changedUpdate(DocumentEvent e) {
-                if(validateKey()){
-                    cipherteksTextArea.setText(viginere.encrypt(plainteksTextArea.getText(), key.getText(), false, false));
-                }
+                encrypt();
             }
         });
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
@@ -121,6 +122,8 @@ public class App extends javax.swing.JFrame {
             .addGap(0, 700, Short.MAX_VALUE)
         );
 
+
+        //Viginere Popup
         this.popUpViginere = new javax.swing.JPanel();
         this.popUpViginere.setBounds(0, 0, 700, 700);
         this.popUp.add(this.popUpViginere);
@@ -135,8 +138,6 @@ public class App extends javax.swing.JFrame {
                 popUpViginereLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(0, 700, Short.MAX_VALUE)
         );
-
-
         this.viginere = new Viginere(26);
         this.viginereMatrix = new JTextField[26][26];
         for(int i=0; i<26; i++){
@@ -161,6 +162,100 @@ public class App extends javax.swing.JFrame {
                 });
                 this.popUpViginere.add(this.viginereMatrix[i][j]);
             }
+        }
+
+        //Enigma Popup
+        this.popUpEnigma = new javax.swing.JPanel();
+        this.popUpEnigma.setBounds(0, 0, 700, 700);
+        this.popUp.add(this.popUpEnigma);
+
+        javax.swing.GroupLayout popUpEnigmaLayout = new javax.swing.GroupLayout(popUpEnigma);
+        popUpEnigma.setLayout(popUpEnigmaLayout);
+        popUpEnigmaLayout.setHorizontalGroup(
+                popUpEnigmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 700, Short.MAX_VALUE)
+        );
+        popUpEnigmaLayout.setVerticalGroup(
+                popUpEnigmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 700, Short.MAX_VALUE)
+        );
+
+
+        enigma = new Enigma(3);
+        rotorLabel = new JLabel[3][26];
+        rotorPermutation = new JTextField[3][26];
+        mirrorLabel = new JLabel[26];
+        mirrorPermutation = new JTextField[26];
+        blueCable = new JLabel[3][3];
+        greenCable = new JLabel[3][3];
+        int paddingLeft = 100;
+        int paddingTop = 25;
+
+        for(int i=0; i<3; i++){
+            for(int j=0; j<26; j++){
+                rotorLabel[i][j] = new JLabel();
+                rotorLabel[i][j].setBounds(paddingLeft + 150*i, paddingTop + 25*j, 25, 25);
+                rotorLabel[i][j].setText(String.valueOf((char)('A'+j)));
+                popUpEnigma.add(rotorLabel[i][j]);
+                rotorPermutation[i][j] = new JTextField();
+                rotorPermutation[i][j].setBounds(paddingLeft + 25 + 150*i, paddingTop + 25*j, 25, 25);
+                rotorPermutation[i][j].setText(String.valueOf(enigma.getRotor()[i][j]));
+                int iCopy = i, jCopy = j;
+                rotorPermutation[i][j].getDocument().addDocumentListener(new DocumentListener() {
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        changedUpdate(e);
+                    }
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+                        changedUpdate(e);
+                    }
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {
+                        enigma.setValue(iCopy, jCopy, rotorPermutation[iCopy][jCopy].getText());
+                        validateEnigma();
+                    }
+                });
+                popUpEnigma.add(rotorPermutation[i][j]);
+            }
+            for(int j=0; j<3; j++){
+                blueCable[i][j] = new JLabel();
+                blueCable[i][j].setBounds(0,0,0,0);
+                blueCable[i][j].setOpaque(true);
+                blueCable[i][j].setBackground(Color.BLUE);
+                popUpEnigma.add(blueCable[i][j]);
+                greenCable[i][j] = new JLabel();
+                greenCable[i][j].setBounds(0,0,0,0);
+                greenCable[i][j].setOpaque(true);
+                greenCable[i][j].setBackground(Color.GREEN);
+                popUpEnigma.add(greenCable[i][j]);
+            }
+        }
+        for(int i=0; i<26; i++){
+            mirrorLabel[i] = new JLabel();
+            mirrorLabel[i].setBounds(paddingLeft + 450, paddingTop + 25*i, 25, 25);
+            mirrorLabel[i].setText(String.valueOf((char)('A'+i)));
+            popUpEnigma.add(mirrorLabel[i]);
+            mirrorPermutation[i] = new JTextField();
+            mirrorPermutation[i].setBounds(paddingLeft + 475, paddingTop + 25*i, 25, 25);
+            mirrorPermutation[i].setText(String.valueOf(enigma.getMirror()[i]));
+            int iCopy = i;
+            mirrorPermutation[i].getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    changedUpdate(e);
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    changedUpdate(e);
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    enigma.setValue(3, iCopy, mirrorPermutation[iCopy].getText());
+                    validateEnigma();
+                }
+            });
+            popUpEnigma.add(mirrorPermutation[i]);
         }
 
 
@@ -251,6 +346,7 @@ public class App extends javax.swing.JFrame {
         String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
         System.out.println(chosen + " chosen");
         popUpViginere.setVisible(chosen.equals("Viginere Full"));
+        popUpEnigma.setVisible(chosen.equals("Enigma"));
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -325,6 +421,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JScrollPane plainteksTextAreaContainer;
     private javax.swing.JPanel popUp;
     private javax.swing.JPanel popUpViginere;
+    private javax.swing.JPanel popUpEnigma;
     private javax.swing.JButton saveCipherteksButton;
     private javax.swing.JButton savePlainteksButton;
     private javax.swing.JButton uploadCipherteksButton;
@@ -335,6 +432,14 @@ public class App extends javax.swing.JFrame {
 
     private javax.swing.JTextField[][] viginereMatrix;
     private Viginere viginere;
+
+    private javax.swing.JLabel[][] rotorLabel;
+    private javax.swing.JTextField[][] rotorPermutation;
+    private javax.swing.JLabel[][] blueCable;
+    private javax.swing.JLabel[][] greenCable;
+    private javax.swing.JLabel[] mirrorLabel;
+    private javax.swing.JTextField[] mirrorPermutation;
+    private Enigma enigma;
 
     public void validateViginereMatrix(){
         for(int i=0; i<26; i++){
@@ -353,12 +458,103 @@ public class App extends javax.swing.JFrame {
             }
         }
     }
-    public boolean validateKey() {
-        boolean ret = (this.key.getText().length() > 0);
-        for (int i = 0; i < this.key.getText().length(); i++) {
-            char c = this.key.getText().charAt(i);
-            ret = ret && ('A' <= c && c <= 'Z');
+
+    public void validateEnigma(){
+        for(int i=0; i<3; i++){
+            for(int j=0; j<26; j++){
+                if(!enigma.getValid()[i][j]){
+                    if(rotorPermutation[i][j].getText().length()==0){
+                        rotorPermutation[i][j].setBackground(Color.RED);
+                    }else{
+                        rotorPermutation[i][j].setBackground(Color.WHITE);
+                        rotorPermutation[i][j].setForeground(Color.RED);
+                    }
+                }else{
+                    rotorPermutation[i][j].setBackground(Color.WHITE);
+                    rotorPermutation[i][j].setForeground(Color.BLACK);
+                }
+            }
         }
-        return ret;
+        for(int j=0; j<26; j++){
+            if(!enigma.getValid()[3][j]){
+                if(mirrorPermutation[j].getText().length()==0){
+                    mirrorPermutation[j].setBackground(Color.RED);
+                }else{
+                    mirrorPermutation[j].setBackground(Color.WHITE);
+                    mirrorPermutation[j].setForeground(Color.RED);
+                }
+            }else{
+                mirrorPermutation[j].setBackground(Color.WHITE);
+                mirrorPermutation[j].setForeground(Color.BLACK);
+            }
+        }
+    }
+
+    public void refreshEnigmaPopup(EnigmaPath path){
+        int paddingLeft = 100;
+        int paddingTop = 25;
+        if(path.result.equals("")){
+            for(int i=0; i<3; i++){
+                for(int j=0; j<3; j++){
+                    blueCable[i][j].setBounds(0,0,0,0);
+                    greenCable[i][j].setBounds(0,0,0,0);
+                }
+                for(int j=0; j<26; j++){
+                    rotorLabel[i][j].setText(String.valueOf((char)('A'+j)));
+                }
+            }
+        }else{
+            for(int i=0; i<3; i++){
+                blueCable[i][0].setBounds(paddingLeft+50 + i*150,paddingTop+10 + 25*path.forward[i], 30, 5);
+                blueCable[i][1].setBounds(paddingLeft+80 + i*150,
+                        paddingTop+10 + 25*Math.min(path.forward[i], path.forward[i+1]),
+                        5, 5 + 25*Math.abs(path.forward[i] - path.forward[i+1]));
+                blueCable[i][2].setBounds(paddingLeft+85 + i*150,paddingTop+10 + 25*path.forward[i+1], 65, 5);
+
+                greenCable[i][0].setBounds(paddingLeft+50 + i*150,paddingTop+10 + 25*path.backward[i], 65, 5);
+                greenCable[i][1].setBounds(paddingLeft+115 + i*150,
+                        paddingTop+10 + 25*Math.min(path.backward[i], path.backward[i+1]),
+                        5, 5 + 25*Math.abs(path.backward[i] - path.backward[i+1]));
+                greenCable[i][2].setBounds(paddingLeft+120 + i*150,paddingTop+10 + 25*path.backward[i+1], 30, 5);
+                for(int j=0; j<26; j++){
+                    rotorLabel[i][j].setText(String.valueOf((char)('A'+(j+26-path.offset[i])%26)));
+                }
+            }
+        }
+    }
+
+    public boolean validateKey() {
+        String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
+        if(chosen.equals("Viginere Full")){
+            boolean ret = (this.key.getText().length() > 0);
+            for (int i = 0; i < this.key.getText().length(); i++) {
+                char c = this.key.getText().charAt(i);
+                ret = ret && ('A' <= c && c <= 'Z');
+            }
+            return ret;
+        }else if(chosen.equals("Enigma")){
+            boolean ret = (this.key.getText().length() == 3);
+            for (int i = 0; i < this.key.getText().length(); i++) {
+                char c = this.key.getText().charAt(i);
+                ret = ret && ('A' <= c && c <= 'Z');
+            }
+            return ret;
+        }
+
+        return false;
+    }
+    public void encrypt(){
+        if(validateKey()){
+            String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
+            if(chosen.equals("Viginere Full")){
+                cipherteksTextArea.setText(viginere.encrypt(plainteksTextArea.getText(), key.getText(), false, true));
+            }
+            if(chosen.equals("Enigma")){
+                EnigmaPath path = enigma.encrypt(plainteksTextArea.getText(), key.getText());
+                cipherteksTextArea.setText(path.result);
+                refreshEnigmaPopup(path);
+            }
+
+        }
     }
 }

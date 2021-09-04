@@ -5,6 +5,8 @@
  */
 package utils;
 
+import java.util.Random;
+
 /**
  *
  * @author PERSONAL
@@ -60,5 +62,27 @@ public class Utils {
             }
         }
         return String.join(" ", result);
+    }
+
+    public static String randomPermutation(){
+        boolean[] used = new boolean[26];
+        for(int i=0; i<26; i++){
+            used[i] = false;
+        }
+        StringBuilder str = new StringBuilder();
+        Random rn = new Random();
+        for(int i=0; i<26; i++){
+            int chosen = rn.nextInt(26-i);
+            int idx = 0;
+            while(chosen>0 || used[idx]){
+                if(!used[idx]){
+                    chosen--;
+                }
+                idx++;
+            }
+            used[idx] = true;
+            str.append((char)('A'+idx));
+        }
+        return str.toString();
     }
 }
