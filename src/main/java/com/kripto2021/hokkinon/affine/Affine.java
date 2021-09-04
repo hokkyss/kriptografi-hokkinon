@@ -32,9 +32,10 @@ public class Affine {
     }
     
     private char encode(char oneChar) {
-        char c;
-        
-        return (char) ((char)((this.m * ((int)oneChar - 65)) % 26) + 65);
+        return (char)((m * (oneChar - 'A') + b) % 26 + 'A');
+    }
+    private char decode(char oneChar){
+        return (char)((oneChar-'A'+26-b)*Utils.moduloInverse(m, 26) % 26 + 'A');
     }
     
     public String encrypt(String text) {
@@ -43,6 +44,15 @@ public class Affine {
         
         for(char c: each) {
             builder.append(encode(c));
+        }
+        return builder.toString();
+    }
+    public String decrypt(String text) {
+        char[] each = Utils.cleanString(text).toCharArray();
+        StringBuilder builder = new StringBuilder();
+
+        for(char c: each) {
+            builder.append(decode(c));
         }
         return builder.toString();
     }
