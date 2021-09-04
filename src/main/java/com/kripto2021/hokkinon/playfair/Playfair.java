@@ -86,6 +86,35 @@ public class Playfair {
         
         return result.toString();
     }
+
+    private String decode(String twoChars) {
+        char[] res = new char[2];
+
+        int first = this.keyString.indexOf(twoChars.charAt(0));
+        int i1 = first / 5, j1 = first % 5;
+
+        int second = this.keyString.indexOf(twoChars.charAt(1));
+        int i2 = second / 5, j2 = second % 5;
+
+        if (i1 == i2) {
+            res[0] = this.keyString.charAt((i1 * 5) + ((j1 + 4) % 5));
+            res[1] = this.keyString.charAt((i2 * 5) + ((j2 + 4) % 5));
+        } else if (j1 == j2) {
+            res[0] = this.keyString.charAt((((i1 + 4) % 5) * 5) + (j1));
+            res[1] = this.keyString.charAt((((i2 + 4) % 5) * 5) + (j2));
+        } else {
+            // baris huruf pertama dan kolom huruf kedua
+            res[0] = this.keyString.charAt(i1 * 5 + j2);
+            // kolom huruf pertama dan baris huruf kedua
+            res[1] = this.keyString.charAt(i2 * 5 + j1);
+        }
+
+        StringBuilder result = new StringBuilder();
+        result.append(res[0]);
+        result.append(res[1]);
+
+        return result.toString();
+    }
     
     public String encrypt(String s) {
         if (this.keyString.equals("")) return "";
@@ -116,9 +145,13 @@ public class Playfair {
     }
     
     public String decrypt(String s) {
-        if (this.keyString.equals("")) return "";
-        String text = Utils.cleanString(s);
-        
-        return "";
+        StringBuilder str = new StringBuilder();
+        for(int i=0; i<s.length(); i++){
+            String twoChar = String.valueOf(s.charAt(i));
+            i++;
+            twoChar += String.valueOf(s.charAt(i));
+            str.append(decode(twoChar));
+        }
+        return str.toString();
     }
 }
