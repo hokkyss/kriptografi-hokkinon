@@ -367,7 +367,7 @@ public class App extends javax.swing.JFrame {
                     .addComponent(playfair4_3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(playfair4_2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(playfair4_1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap()));
         popUp.setEnabled(false);
         popUp.setFocusable(false);
         popUp.setMaximumSize(new java.awt.Dimension(423, 377));
@@ -443,7 +443,7 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(popUpAffine, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap()
-        );
+        ));
 
         uploadPlainteksButton.setText("Upload");
         uploadPlainteksButton.addActionListener(new java.awt.event.ActionListener() {
@@ -565,7 +565,6 @@ public class App extends javax.swing.JFrame {
         
         if (this.isEncrypting) this.encrypt();
         else this.decrypt();
-        ComboBoxItem selected = (ComboBoxItem) this.algorithmChoiceComboBox.getSelectedItem();        
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
     private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
@@ -675,10 +674,15 @@ public class App extends javax.swing.JFrame {
     private void encrypt() {
         if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
             this.cipherteksTextArea.setText(this.playfair.encrypt(this.plainteksTextArea.getText()));
+        } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
+            // this.cipherteksTextArea.setText(this.affine.encrypt(this.plainteksTextArea.getText()));
         }
     }
     
     private void decrypt() {
+        if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
+            this.plainteksTextArea.setText(this.playfair.encrypt(this.cipherteksTextArea.getText()));
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
