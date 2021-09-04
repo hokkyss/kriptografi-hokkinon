@@ -93,6 +93,11 @@ public class App extends javax.swing.JFrame {
         popUp.setMinimumSize(new java.awt.Dimension(423, 377));
         popUp.setPreferredSize(new java.awt.Dimension(433, 377));
 
+        mTextField.setEditable(false);
+
+        bTextField.setEditable(false);
+
+        mLabel.setBackground(new java.awt.Color(255, 255, 255));
         mLabel.setText("m: ");
 
         bLabel.setText("b: ");
