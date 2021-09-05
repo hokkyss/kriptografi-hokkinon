@@ -74,13 +74,16 @@ public class Viginere {
     }
     
     private char decode(char c, char key) {
-        char[] row = this.matrix[key];
-
+        char[] row;
+        
         if (this.size != 256) {
-            if ('A' <= c && c <= 'Z') return c;
-            return (char) ((char) row.toString().indexOf(c) + 'A');
+            row = this.matrix[key - 'A'];
+            
+            if ('A' <= c && c <= 'Z') return (char) ((char) String.valueOf(row).indexOf(c) + 'A');
+            return c;
         }
-        return (char) row.toString().indexOf(c);
+        row = this.matrix[key];
+        return (char) String.valueOf(row).indexOf(c);
     }
 
     //Encrypt

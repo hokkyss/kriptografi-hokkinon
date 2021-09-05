@@ -168,20 +168,6 @@ public class App extends javax.swing.JFrame {
         plainteksTextArea.setColumns(20);
         plainteksTextArea.setRows(5);
         plainteksTextArea.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        plainteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                changedUpdate(e);
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                changedUpdate(e);
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                onChangePlaintext(e);
-            }
-        });
         plainteksTextAreaContainer.setViewportView(plainteksTextArea);
         plainteksTextArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -409,7 +395,7 @@ public class App extends javax.swing.JFrame {
         affineDescription.setColumns(20);
         affineDescription.setLineWrap(true);
         affineDescription.setRows(5);
-        affineDescription.setText("Input the key at \"key: \" section.\n\nWrite it in format <m><space><b>, both m and b are integers. Where m is coprime to 26.\n");
+        affineDescription.setText("Input the key at \"key: \" section.\n\nWrite it in <m><space><b>, where m is coprime to 26.\n");
         affineDescription.setWrapStyleWord(true);
         affineDescription.setEnabled(false);
         affineDescriptionScrollPane.setViewportView(affineDescription);
@@ -770,9 +756,6 @@ public class App extends javax.swing.JFrame {
         long[] affineKey = Affine.getKeyFrom(this.key.getText());
         this.affine = new Affine(affineKey[0], affineKey[1]);
         this.setAffineKeys();
-        // ABCDEFNSKANCKANSND
-        // Q Z
-        // ZPFVLBZBDZZFDZZBZV
 
         if (this.isEncrypting) {
             this.encrypt();
@@ -831,11 +814,10 @@ public class App extends javax.swing.JFrame {
     
     private void encrypt() {
         if(validateKey()){
-            String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
-            if(chosen.equals("Viginere Full")){
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")){
                 cipherteksTextArea.setText(viginere.encrypt(plainteksTextArea.getText(), key.getText(), false, true));
             }
-            if(chosen.equals("Enigma")){
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
                 EnigmaPath path = enigma.encrypt(plainteksTextArea.getText(), key.getText());
                 cipherteksTextArea.setText(path.result);
                 refreshEnigmaPopup(path);
@@ -853,6 +835,10 @@ public class App extends javax.swing.JFrame {
             this.plainteksTextArea.setText(this.playfair.decrypt(this.cipherteksTextArea.getText()));
         } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
             this.plainteksTextArea.setText(this.affine.decrypt(this.cipherteksTextArea.getText()));
+        } else if(validateKey()){
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")){
+                plainteksTextArea.setText(viginere.decrypt(cipherteksTextArea.getText(), key.getText(), false, true));
+            }
         }
     }
 
@@ -1031,15 +1017,14 @@ public class App extends javax.swing.JFrame {
     }
 
     public boolean validateKey() {
-        String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
-        if(chosen.equals("Viginere Full")){
+        if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")) {
             boolean ret = (this.key.getText().length() > 0);
             for (int i = 0; i < this.key.getText().length(); i++) {
                 char c = this.key.getText().charAt(i);
                 ret = ret && ('A' <= c && c <= 'Z');
             }
             return ret;
-        }else if(chosen.equals("Enigma")){
+        } else if (this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
             boolean ret = (this.key.getText().length() == 3);
             for (int i = 0; i < this.key.getText().length(); i++) {
                 char c = this.key.getText().charAt(i);
