@@ -5,6 +5,7 @@
  */
 package com.kripto2021.hokkinon;
 
+import com.kripto2021.hokkinon.affine.*;
 import com.kripto2021.hokkinon.enigma.*;
 import com.kripto2021.hokkinon.playfair.*;
 import com.kripto2021.hokkinon.viginere.*;
@@ -25,6 +26,7 @@ public class App extends javax.swing.JFrame {
     private ComboBoxItem chosenAlgorithm;
     
     private Playfair playfair = new Playfair("");
+    private Affine affine = new Affine(-1, -1);
     private boolean isEncrypting = true;
     
     private javax.swing.JTextField[][] playfairKey;
@@ -765,6 +767,13 @@ public class App extends javax.swing.JFrame {
         this.playfair.setKey(playfairkey);
         this.setPlayfairKeys();
         
+        long[] affineKey = Affine.getKeyFrom(this.key.getText());
+        this.affine = new Affine(affineKey[0], affineKey[1]);
+        this.setAffineKeys();
+        // ABCDEFNSKANCKANSND
+        // Q Z
+        // ZPFVLBZBDZZFDZZBZV
+
         if (this.isEncrypting) {
             this.encrypt();
         } else {
@@ -820,16 +829,6 @@ public class App extends javax.swing.JFrame {
         });
     }
     
-    private void setPlayfairKeys() {
-        if (this.playfair.getKey().equals("")) return;
-        
-        for(int i = 0; i < 5; i++) {
-            for(int j = 0; j < 5; j++) {
-                this.playfairKey[i][j].setText(String.valueOf(this.playfair.getKey().charAt((5 * i) + j)));
-            }
-        }
-    }
-    
     private void encrypt() {
         if(validateKey()){
             String chosen = algorithmChoiceComboBox.getSelectedItem().toString();
@@ -845,13 +844,15 @@ public class App extends javax.swing.JFrame {
         if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
             this.cipherteksTextArea.setText(this.playfair.encrypt(this.plainteksTextArea.getText()));
         } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
-            // this.cipherteksTextArea.setText(this.affine.encrypt(this.plainteksTextArea.getText()));
+            this.cipherteksTextArea.setText(this.affine.encrypt(this.plainteksTextArea.getText()));
         }
     }
     
     private void decrypt() {
         if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
-            this.plainteksTextArea.setText(this.playfair.encrypt(this.cipherteksTextArea.getText()));
+            this.plainteksTextArea.setText(this.playfair.decrypt(this.cipherteksTextArea.getText()));
+        } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
+            this.plainteksTextArea.setText(this.affine.decrypt(this.cipherteksTextArea.getText()));
         }
     }
 
@@ -922,6 +923,30 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel[] mirrorLabel;
     private javax.swing.JTextField[] mirrorPermutation;
     private Enigma enigma;
+
+    
+    private void setPlayfairKeys() {
+        if (this.playfair.getKey().equals("")) return;
+        
+        for(int i = 0; i < 5; i++) {
+            for(int j = 0; j < 5; j++) {
+                this.playfairKey[i][j].setText(String.valueOf(this.playfair.getKey().charAt((5 * i) + j)));
+            }
+        }
+    }
+    
+    private void setAffineKeys() {
+        if (this.affine.getB() != -1) {
+            this.bTextField.setText(String.valueOf(this.affine.getB()));
+        } else {
+            this.bTextField.setText("");
+        }
+        if (this.affine.getM() != -1) {
+            this.mTextField.setText(String.valueOf(this.affine.getM()));
+        } else {
+            this.mTextField.setText("");            
+        }
+    }
 
     public void validateViginereMatrix(){
         for (int i = 0; i < 26; i++) {

@@ -36,6 +36,8 @@ public class Utils {
         // return r, u, v
         // r = GCD(a, m) = 1
         // v = a number such that au + mv = r
+        
+        while (u < 0) u += m;
         return u;
     }
     
