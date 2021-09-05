@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -26,7 +25,6 @@ import javax.swing.event.DocumentListener;
  */
 public class App extends javax.swing.JFrame {
     private File inputFile;
-    private Scanner fileReader;
     private ComboBoxItem chosenAlgorithm;
     
     private Playfair playfair = new Playfair("");
@@ -501,6 +499,11 @@ public class App extends javax.swing.JFrame {
                 isAutoKey.setText("You use auto key");
                 autoKey.setEnabled(false);
                 periodicKey.setEnabled(true);
+                if(isEncrypting){
+                    encrypt();
+                }else{
+                    decrypt();
+                }
             }
         });
         popUpViginere.add(autoKey);
@@ -515,6 +518,11 @@ public class App extends javax.swing.JFrame {
                 isAutoKey.setText("You use periodic key");
                 autoKey.setEnabled(true);
                 periodicKey.setEnabled(false);
+                if(isEncrypting){
+                    encrypt();
+                }else{
+                    decrypt();
+                }
             }
         });
         popUpViginere.add(periodicKey);
@@ -652,6 +660,12 @@ public class App extends javax.swing.JFrame {
         savePlainteksButton.setText("Save");
 
         uploadCipherteksButton.setText("Upload");
+        uploadCipherteksButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadCipherteksButtonActionPerformed(evt);
+            }
+        });
+        uploadCipherteksButton.setEnabled(false);
 
         encryptOrDecrypt.add(decryptRadioButton);
         decryptRadioButton.setText("decrypt");
@@ -797,19 +811,47 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             this.inputFile = null;
-            this.fileReader = null;
             
             this.uploadFile.showOpenDialog(this);
             this.inputFile = uploadFile.getSelectedFile();
-            System.out.println(this.inputFile.getPath());
-            System.out.println(this.inputFile.getAbsolutePath());
-            System.out.println(this.inputFile.getParent());
-            System.out.println(this.inputFile.getName());
             
-            this.fileReader = new Scanner(this.inputFile);
+            FileReader fr = new FileReader(this.inputFile);
+            char[] buf = new char[1048576];
+            
+            fr.read(buf);
+            StringBuilder str = new StringBuilder();
+            for(int i=0; i<1048576 && buf[i]>0; i++){
+                str.append(buf[i]);
+            }
+            plainteksTextArea.setText(String.valueOf(str));
+            System.out.println(String.valueOf(str));
         }
         catch (Exception e) {
             
+        }
+    }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
+
+    private void uploadCipherteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
+        // TODO add your handling code here:
+        try {
+            this.inputFile = null;
+
+            this.uploadFile.showOpenDialog(this);
+            this.inputFile = uploadFile.getSelectedFile();
+
+            FileReader fr = new FileReader(this.inputFile);
+            char[] buf = new char[1048576];
+
+            fr.read(buf);
+            StringBuilder str = new StringBuilder();
+            for(int i=0; i<1048576 && buf[i]>0; i++){
+                str.append(buf[i]);
+            }
+            cipherteksTextArea.setText(String.valueOf(str));
+            System.out.println(String.valueOf(str));
+        }
+        catch (Exception e) {
+
         }
     }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
 
@@ -848,6 +890,8 @@ public class App extends javax.swing.JFrame {
         this.isEncrypting = this.encryptRadioButton.isSelected();
         this.plainteksTextArea.setEditable(this.isEncrypting);
         this.cipherteksTextArea.setEditable(!this.isEncrypting);
+        uploadPlainteksButton.setEnabled(true);
+        uploadCipherteksButton.setEnabled(false);
         merged.setEnabled(!chosenAlgorithm.value().equalsIgnoreCase("Extended viginere"));
         seperated.setEnabled(!chosenAlgorithm.value().equalsIgnoreCase("Extended viginere"));
     }//GEN-LAST:event_encryptRadioButtonActionPerformed
@@ -856,6 +900,8 @@ public class App extends javax.swing.JFrame {
         this.isEncrypting = !this.decryptRadioButton.isSelected();
         this.plainteksTextArea.setEditable(this.isEncrypting);
         this.cipherteksTextArea.setEditable(!this.isEncrypting);
+        uploadPlainteksButton.setEnabled(false);
+        uploadCipherteksButton.setEnabled(true);
         merged.setEnabled(false);
         seperated.setEnabled(false);
     }//GEN-LAST:event_decryptRadioButtonActionPerformed
@@ -869,7 +915,6 @@ public class App extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        System.out.println("Hello world!");
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -902,7 +947,7 @@ public class App extends javax.swing.JFrame {
                 String result = viginere.encrypt(
                         plainteksTextArea.getText(),
                         key.getText(),
-                        false);
+                        !(autoKey.isEnabled()));
                 if(seperated.isSelected()){
                     result = Utils.splitString(result);
                 }
@@ -946,7 +991,10 @@ public class App extends javax.swing.JFrame {
             this.plainteksTextArea.setText(this.affine.decrypt(this.cipherteksTextArea.getText()));
         } else if(validateKey()){
             if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")){
-                plainteksTextArea.setText(viginere.decrypt(cipherteksTextArea.getText(), key.getText(), false));
+                plainteksTextArea.setText(viginere.decrypt(
+                        cipherteksTextArea.getText(),
+                        key.getText(),
+                        !(autoKey.isEnabled())));
             }
             if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
                 EnigmaPath path = enigma.encrypt(cipherteksTextArea.getText(), key.getText());
@@ -955,6 +1003,7 @@ public class App extends javax.swing.JFrame {
             }
             if(this.chosenAlgorithm.value().equalsIgnoreCase("extended viginere")){
                 plainteksTextArea.setText(xviginere.decrypt(cipherteksTextArea.getText(), key.getText(), false));
+
             }
         }
     }
@@ -1036,6 +1085,9 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel[] mirrorLabel;
     private javax.swing.JTextField[] mirrorPermutation;
     private Enigma enigma;
+
+    private String plainFileContent;
+    private String cipherFileContent;
 
     
     private void setPlayfairKeys() {

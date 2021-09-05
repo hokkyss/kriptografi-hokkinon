@@ -110,7 +110,7 @@ public class Viginere {
             char c = plaintext.charAt(i);
         
             if (isAutokey) {
-                if (i > keysz) {
+                if (i >= keysz) {
                     result.append(this.encode(c, plaintext.charAt(i - keysz)));
                 } else {
                     result.append(this.encode(c, upperCaseKey.charAt(i)));
@@ -139,8 +139,8 @@ public class Viginere {
             char c = ciphertext.charAt(i);
         
             if (isAutokey) {
-                if (i > keysz) {
-                    result.append(this.decode(c, ciphertext.charAt(i - keysz)));
+                if (i >= keysz) {
+                    result.append(this.decode(c, result.charAt(i - keysz)));
                 } else {
                     result.append(this.decode(c, upperCaseKey.charAt(i)));
                 }
