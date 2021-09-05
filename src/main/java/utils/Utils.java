@@ -59,11 +59,15 @@ public class Utils {
         String[] result = new String[(len + 4) / 5];
         
         for(int i = 0; i < (len + 4) / 5; i++) {
-            for(int j = 0; j < 5; j++) {
-                result[i] = result[i] + s.charAt((i * 5) + j);
+            result[i] = "";
+            for(int j = 5*i; j < Math.min(len, 5*i+5); j++) {
+                result[i] = result[i] + s.charAt(j);
             }
         }
         return String.join(" ", result);
+    }
+    public static String joinString(String s) {
+        return String.join("", s.split(" "));
     }
 
     public static String randomPermutation(){

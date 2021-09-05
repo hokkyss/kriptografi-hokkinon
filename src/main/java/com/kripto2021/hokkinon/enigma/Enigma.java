@@ -122,6 +122,7 @@ public class Enigma {
     }
 
     public EnigmaPath encrypt(String text, String key){
+        text = Utils.cleanString(text);
         EnigmaPath ret = new EnigmaPath();
         StringBuilder str = new StringBuilder();
         int rotorItr=0, mul=1;

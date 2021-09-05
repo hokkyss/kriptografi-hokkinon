@@ -9,7 +9,11 @@ import com.kripto2021.hokkinon.affine.*;
 import com.kripto2021.hokkinon.enigma.*;
 import com.kripto2021.hokkinon.playfair.*;
 import com.kripto2021.hokkinon.viginere.*;
+import utils.Utils;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
@@ -40,6 +44,7 @@ public class App extends javax.swing.JFrame {
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Affine"));
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Playfair"));
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Viginere Full"));
+        this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Extended Viginere"));
         this.algorithmChoiceComboBox.addItem(new ComboBoxItem("Enigma"));
         
         this.playfairKey = new javax.swing.JTextField[5][5];
@@ -81,6 +86,7 @@ public class App extends javax.swing.JFrame {
 
         uploadFile = new javax.swing.JFileChooser();
         encryptOrDecrypt = new javax.swing.ButtonGroup();
+        cipherFormat = new javax.swing.ButtonGroup();
         algorithmChoiceComboBox = new javax.swing.JComboBox<>();
         cipherteksTextAreaContainer = new javax.swing.JScrollPane();
         cipherteksTextArea = new javax.swing.JTextArea();
@@ -130,6 +136,8 @@ public class App extends javax.swing.JFrame {
         uploadCipherteksButton = new javax.swing.JButton();
         decryptRadioButton = new javax.swing.JRadioButton();
         encryptRadioButton = new javax.swing.JRadioButton();
+        merged = new javax.swing.JRadioButton();
+        seperated = new javax.swing.JRadioButton();
 
         uploadFile.setName("uploadFile"); // NOI18N
 
@@ -162,6 +170,7 @@ public class App extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 onChangeCiphertext(e);
+
             }
         });
 
@@ -452,8 +461,15 @@ public class App extends javax.swing.JFrame {
                                 .addContainerGap()
                         ));
 
+        //XViginere Popup
+        this.popUpXViginere = new javax.swing.JLabel();
+        this.popUpXViginere.setBounds(0, 0, 700, 700);
+        this.popUpXViginere.setText("Matrix tidak ditampilkan karena terlalu besar");
+        this.popUpXViginere.setOpaque(true);
+        this.popUp.add(this.popUpXViginere);
 
         //Viginere Popup
+        this.xviginere = new Viginere(256);
         this.popUpViginere = new javax.swing.JPanel();
         this.popUpViginere.setBounds(0, 0, 700, 700);
         this.popUp.add(this.popUpViginere);
@@ -469,12 +485,46 @@ public class App extends javax.swing.JFrame {
                         .addGap(0, 700, Short.MAX_VALUE)
         );
         this.viginere = new Viginere(26);
+        isAutoKey = new JLabel();
+        isAutoKey.setBounds(200, 0, 200, 25);
+        isAutoKey.setText("You use auto key");
+        isAutoKey.setOpaque(true);
+        popUpViginere.add(isAutoKey);
+
+        autoKey = new JButton();
+        autoKey.setBounds(0, 0, 100, 25);
+        autoKey.setText("Auto key");
+        autoKey.setEnabled(false);
+        autoKey.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isAutoKey.setText("You use auto key");
+                autoKey.setEnabled(false);
+                periodicKey.setEnabled(true);
+            }
+        });
+        popUpViginere.add(autoKey);
+
+        periodicKey = new JButton();
+        periodicKey.setBounds(100, 0, 100, 25);
+        periodicKey.setText("Periodic key");
+        periodicKey.setEnabled(true);
+        periodicKey.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isAutoKey.setText("You use periodic key");
+                autoKey.setEnabled(true);
+                periodicKey.setEnabled(false);
+            }
+        });
+        popUpViginere.add(periodicKey);
+
         this.viginereMatrix = new JTextField[26][26];
         for(int i=0; i<26; i++){
             for(int j=0; j<26; j++) {
                 int iCopy = i, jCopy = j;
                 this.viginereMatrix[i][j] = new JTextField(String.valueOf((char)('A' + (i+j)%26)));
-                this.viginereMatrix[i][j].setBounds(25*(j+1), 25*(i+1), 25, 25);
+                this.viginereMatrix[i][j].setBounds(25*(j+2), 25*(i+2), 25, 25);
                 this.viginereMatrix[i][j].getDocument().addDocumentListener(new DocumentListener() {
                     @Override
                     public void insertUpdate(DocumentEvent e) {
@@ -567,6 +617,7 @@ public class App extends javax.swing.JFrame {
             mirrorLabel[i].setText(String.valueOf((char)('A'+i)));
             popUpEnigma.add(mirrorLabel[i]);
             mirrorPermutation[i] = new JTextField();
+            mirrorPermutation[i].setEditable(false);
             mirrorPermutation[i].setBounds(paddingLeft + 475, paddingTop + 25*i, 25, 25);
             mirrorPermutation[i].setText(String.valueOf(enigma.getMirror()[i]));
             int iCopy = i;
@@ -620,6 +671,25 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        cipherFormat.add(merged);
+        merged.setSelected(true);
+        merged.setText("merged");
+        merged.setToolTipText("Unseperate ciphertext every 5 characters");
+        merged.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cipherteksTextArea.setText(Utils.joinString(cipherteksTextArea.getText()));
+            }
+        });
+
+        cipherFormat.add(seperated);
+        seperated.setText("seperated");
+        seperated.setToolTipText("Seperate ciphertext every 5 characters");
+        seperated.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cipherteksTextArea.setText(Utils.splitString(cipherteksTextArea.getText()));
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -656,7 +726,9 @@ public class App extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(plainteksLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(uploadCipherteksButton)
+                                    .addComponent(merged)
+                                    .addComponent(seperated)
+                                    .addComponent(uploadCipherteksButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(saveCipherteksButton)))))
                 .addContainerGap())
@@ -682,7 +754,10 @@ public class App extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(saveCipherteksButton)
-                                .addComponent(uploadCipherteksButton))
+                                .addComponent(uploadCipherteksButton)
+                                .addComponent(seperated)
+                                .addComponent(merged)
+                            )
                             .addComponent(plainteksLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cipherteksTextAreaContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -707,9 +782,14 @@ public class App extends javax.swing.JFrame {
         this.popUpPlayfair.setVisible(selected.value().equalsIgnoreCase("playfair"));
         this.popUpAffine.setVisible(selected.value().equalsIgnoreCase("affine"));
         this.popUpViginere.setVisible(selected.value().equalsIgnoreCase("viginere full"));
+        this.popUpXViginere.setVisible(selected.value().equalsIgnoreCase("extended viginere"));
         this.popUpEnigma.setVisible(selected.value().equalsIgnoreCase("enigma"));
         
-        if (this.isEncrypting) this.encrypt();
+        if (this.isEncrypting) {
+            merged.setEnabled(!selected.value().equalsIgnoreCase("extended viginere"));
+            seperated.setEnabled(!selected.value().equalsIgnoreCase("extended viginere"));
+            this.encrypt();
+        }
         else this.decrypt();
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
 
@@ -768,12 +848,16 @@ public class App extends javax.swing.JFrame {
         this.isEncrypting = this.encryptRadioButton.isSelected();
         this.plainteksTextArea.setEditable(this.isEncrypting);
         this.cipherteksTextArea.setEditable(!this.isEncrypting);
+        merged.setEnabled(!chosenAlgorithm.value().equalsIgnoreCase("Extended viginere"));
+        seperated.setEnabled(!chosenAlgorithm.value().equalsIgnoreCase("Extended viginere"));
     }//GEN-LAST:event_encryptRadioButtonActionPerformed
 
     private void decryptRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptRadioButtonActionPerformed
         this.isEncrypting = !this.decryptRadioButton.isSelected();
         this.plainteksTextArea.setEditable(this.isEncrypting);
         this.cipherteksTextArea.setEditable(!this.isEncrypting);
+        merged.setEnabled(false);
+        seperated.setEnabled(false);
     }//GEN-LAST:event_decryptRadioButtonActionPerformed
 
     /**
@@ -814,19 +898,44 @@ public class App extends javax.swing.JFrame {
     
     private void encrypt() {
         if(validateKey()){
-            if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")){
-                cipherteksTextArea.setText(viginere.encrypt(plainteksTextArea.getText(), key.getText(), false, true));
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full") && viginere.isMatrixValid()){
+                String result = viginere.encrypt(
+                        plainteksTextArea.getText(),
+                        key.getText(),
+                        false);
+                if(seperated.isSelected()){
+                    result = Utils.splitString(result);
+                }
+                cipherteksTextArea.setText(result);
             }
             if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
                 EnigmaPath path = enigma.encrypt(plainteksTextArea.getText(), key.getText());
-                cipherteksTextArea.setText(path.result);
+                String result = path.result;
+                if(seperated.isSelected()){
+                    result = Utils.splitString(result);
+                }
+                cipherteksTextArea.setText(result);
                 refreshEnigmaPopup(path);
+            }
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("extended viginere")){
+                cipherteksTextArea.setText(
+                        xviginere.encrypt(plainteksTextArea.getText(),
+                        key.getText(),
+                        false));
             }
         }
         if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
-            this.cipherteksTextArea.setText(this.playfair.encrypt(this.plainteksTextArea.getText()));
+            String result = this.playfair.encrypt(this.plainteksTextArea.getText());
+            if(seperated.isSelected()){
+                result = Utils.splitString(result);
+            }
+            this.cipherteksTextArea.setText(result);
         } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
-            this.cipherteksTextArea.setText(this.affine.encrypt(this.plainteksTextArea.getText()));
+            String result = this.affine.encrypt(this.plainteksTextArea.getText());
+            if(seperated.isSelected()){
+                result = Utils.splitString(result);
+            }
+            this.cipherteksTextArea.setText(result);
         }
     }
     
@@ -837,7 +946,15 @@ public class App extends javax.swing.JFrame {
             this.plainteksTextArea.setText(this.affine.decrypt(this.cipherteksTextArea.getText()));
         } else if(validateKey()){
             if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")){
-                plainteksTextArea.setText(viginere.decrypt(cipherteksTextArea.getText(), key.getText(), false, true));
+                plainteksTextArea.setText(viginere.decrypt(cipherteksTextArea.getText(), key.getText(), false));
+            }
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
+                EnigmaPath path = enigma.encrypt(cipherteksTextArea.getText(), key.getText());
+                plainteksTextArea.setText(path.result);
+                refreshEnigmaPopup(path);
+            }
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("extended viginere")){
+                plainteksTextArea.setText(xviginere.decrypt(cipherteksTextArea.getText(), key.getText(), false));
             }
         }
     }
@@ -850,9 +967,14 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField bTextField;
     private javax.swing.JTextArea cipherteksTextArea;
     private javax.swing.JScrollPane cipherteksTextAreaContainer;
+
     private javax.swing.JRadioButton decryptRadioButton;
     private javax.swing.ButtonGroup encryptOrDecrypt;
     private javax.swing.JRadioButton encryptRadioButton;
+    private javax.swing.JRadioButton merged;
+    private javax.swing.ButtonGroup cipherFormat;
+    private javax.swing.JRadioButton seperated;
+
     private javax.swing.JTextField key;
     private javax.swing.JLabel keyLabel;
     private javax.swing.JLabel mLabel;
@@ -890,6 +1012,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JPanel popUpPlayfair;
     private javax.swing.JPanel popUpAffine;
     private javax.swing.JPanel popUpViginere;
+    private javax.swing.JLabel popUpXViginere;
     private javax.swing.JPanel popUpEnigma;
     private javax.swing.JButton saveCipherteksButton;
     private javax.swing.JButton savePlainteksButton;
@@ -900,7 +1023,11 @@ public class App extends javax.swing.JFrame {
 
 
     private javax.swing.JTextField[][] viginereMatrix;
+    private javax.swing.JButton periodicKey;
+    private javax.swing.JButton autoKey;
+    private javax.swing.JLabel isAutoKey;
     private Viginere viginere;
+    private Viginere xviginere;
 
     private javax.swing.JLabel[][] rotorLabel;
     private javax.swing.JTextField[][] rotorPermutation;
@@ -1017,22 +1144,33 @@ public class App extends javax.swing.JFrame {
     }
 
     public boolean validateKey() {
-        if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")) {
-            boolean ret = (this.key.getText().length() > 0);
+        boolean ret = true;
+        if(this.chosenAlgorithm.value().equalsIgnoreCase("extended viginere")) {
+            ret = (this.key.getText().length() > 0);
+        }else if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")) {
+            ret = (this.key.getText().length() > 0);
             for (int i = 0; i < this.key.getText().length(); i++) {
                 char c = this.key.getText().charAt(i);
                 ret = ret && ('A' <= c && c <= 'Z');
             }
-            return ret;
+
         } else if (this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
-            boolean ret = (this.key.getText().length() == 3);
+            ret = (this.key.getText().length() == 3);
             for (int i = 0; i < this.key.getText().length(); i++) {
                 char c = this.key.getText().charAt(i);
                 ret = ret && ('A' <= c && c <= 'Z');
             }
-            return ret;
+        }
+        if(ret){
+            key.setBackground(Color.WHITE);
+            key.setForeground(Color.BLACK);
+        }else if(key.getText().length() == 0){
+            key.setBackground(Color.red);
+        }else{
+            key.setForeground(Color.red);
+            key.setBackground(Color.white);
         }
 
-        return false;
+        return ret;
     }
 }

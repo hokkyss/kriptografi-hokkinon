@@ -145,13 +145,30 @@ public class Playfair {
     }
     
     public String decrypt(String s) {
-        StringBuilder str = new StringBuilder();
-        for(int i=0; i<s.length(); i++){
-            String twoChar = String.valueOf(s.charAt(i));
-            i++;
-            twoChar += String.valueOf(s.charAt(i));
-            str.append(decode(twoChar));
+        if (this.keyString.equals("")) return "";
+        String text = Utils.cleanString(s);
+        ArrayList<String> bigrams = new ArrayList<>();
+
+        // convert the text to bigrams;
+        for(int i = 0; i < text.length(); i++) {
+            String temp = "";
+            if (text.charAt(i) == 'J' || text.charAt(i) == 'j') temp += "i";
+            else temp += text.charAt(i);
+
+            if (i + 1 >= text.length()) {
+                temp += "X";
+            } else if (text.charAt(i + 1) == temp.toUpperCase().charAt(0) || text.charAt(i + 1) == temp.toLowerCase().charAt(0)) {
+                temp += "X";
+            } else {
+                temp += text.charAt(++i);
+            }
+            bigrams.add(temp);
         }
-        return str.toString();
+
+        StringBuilder encrypted = new StringBuilder();
+        for(String twoChars: bigrams) {
+            encrypted.append(this.decode(twoChars));
+        }
+        return encrypted.toString();
     }
 }

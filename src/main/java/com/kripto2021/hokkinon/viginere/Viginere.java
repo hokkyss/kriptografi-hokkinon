@@ -5,6 +5,8 @@
  */
 package com.kripto2021.hokkinon.viginere;
 
+import utils.Utils;
+
 /**
  *
  * @author PERSONAL
@@ -18,9 +20,13 @@ public class Viginere {
         this.size = sz;
         this.matrix = new char[sz][sz];
         this.valid = new boolean[sz][sz];
-        for(int i = 0; i < 26; i++) {
-            for (int j = 0; j < 26; j++) {
-                this.matrix[i][j] = (char) ('A' + (i + j) % sz);
+        for(int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if(sz == 256){
+                    this.matrix[i][j] = (char) ((i + j) % sz);
+                }else{
+                    this.matrix[i][j] = (char) ('A' + (i + j) % sz);
+                }
                 this.valid[i][j] = true;
             }
         }
@@ -87,25 +93,18 @@ public class Viginere {
     }
 
     //Encrypt
-    public String encrypt(String plaintext, String key, boolean isAutokey, boolean includeSymbols){
+    public String encrypt(String plaintext, String key, boolean isAutokey){
         StringBuilder plaintextCopy = new StringBuilder();
         StringBuilder result = new StringBuilder();
-        
+
+        String upperCaseKey = key;
+        if(size!=256){
+            upperCaseKey = Utils.cleanString(key);;
+            plaintext = Utils.cleanString(plaintext);
+        }
+
         int keysz = key.length();
         int textsz = plaintext.length();
-        
-        String upperCaseKey = key.toUpperCase();
-        plaintext = plaintext.toUpperCase();
-        
-        for(int i = 0; i < textsz; i++) {
-            char c = plaintext.charAt(i);
-            if (includeSymbols || ('A' <= c && c <= 'Z')) {
-                plaintextCopy.append(c);
-            }
-        }
-        
-        plaintext = plaintextCopy.toString();
-        textsz = plaintext.length();
         
         for(int i = 0; i < textsz; i++) {
             char c = plaintext.charAt(i);
@@ -123,25 +122,18 @@ public class Viginere {
         return result.toString();
     }
     
-    public String decrypt(String ciphertext, String key, boolean isAutokey, boolean includeSymbols) {
-        StringBuilder ciphertextCopy = new StringBuilder();
+    public String decrypt(String ciphertext, String key, boolean isAutokey) {
         StringBuilder result = new StringBuilder();
         
-        int keysz = key.length();
-        int textsz = ciphertext.length();
+
         
         String upperCaseKey = key.toUpperCase();
-        ciphertext = ciphertext.toUpperCase();
-        
-        for(int i = 0; i < textsz; i++) {
-            char c = ciphertext.charAt(i);
-            if (includeSymbols || ('A' <= c && c <= 'Z')) {
-                ciphertextCopy.append(c);
-            }
+        if(size!=256){
+            upperCaseKey = Utils.cleanString(key);;
+            ciphertext = Utils.cleanString(ciphertext);
         }
-        
-        ciphertext = ciphertextCopy.toString();
-        textsz = ciphertext.length();
+        int keysz = key.length();
+        int textsz = ciphertext.length();
         
         for(int i = 0; i < textsz; i++) {
             char c = ciphertext.charAt(i);
