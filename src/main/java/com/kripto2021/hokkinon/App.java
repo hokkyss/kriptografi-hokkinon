@@ -838,6 +838,10 @@ public class App extends javax.swing.JFrame {
         } else if(validateKey()){
             if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")){
                 plainteksTextArea.setText(viginere.decrypt(cipherteksTextArea.getText(), key.getText(), false, true));
+            } else if (this.chosenAlgorithm.value().equalsIgnoreCase("enigma")) {
+                EnigmaPath path = enigma.decrypt(cipherteksTextArea.getText(), key.getText());
+                this.plainteksTextArea.setText(path.result);
+                refreshEnigmaPopup(path);
             }
         }
     }

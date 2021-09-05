@@ -135,5 +135,8 @@ public class Enigma {
         ret.result = str.toString();
         return ret;
     }
-
+    
+    public EnigmaPath decrypt(String text, String key) {
+        return this.encrypt(text, key);
+    }
 }
