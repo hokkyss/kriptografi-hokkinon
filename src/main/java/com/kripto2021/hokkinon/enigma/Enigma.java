@@ -30,7 +30,8 @@ public class Enigma {
             }
             str = Utils.randomPermutation();
         }
-
+        str = Utils.randomPairing();
+        System.out.println(str);
         for(int i=0; i<26; i++){
             mirror[i] = str.charAt(i);
             valid[nbR][i] = true;

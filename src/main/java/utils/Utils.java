@@ -87,4 +87,29 @@ public class Utils {
         }
         return str.toString();
     }
+
+    public static String randomPairing(){
+        char[] pair = new char[26];
+        for(int i=0; i<26; i++){
+            pair[i] = ' ';
+        }
+        Random rn = new Random();
+        int paired = 0;
+        for(int i=0; i<26; i++){
+            if(pair[i] == ' '){
+                int chosen = rn.nextInt(25-2*paired) + 1;
+                int idx = 0;
+                while(chosen>0 || pair[idx] != ' '){
+                    if(pair[idx]==' '){
+                        chosen--;
+                    }
+                    idx++;
+                }
+                pair[i] = (char) ('A'+idx);
+                pair[idx] = (char) ('A'+i);
+                paired++;
+            }
+        }
+        return String.valueOf(pair);
+    }
 }
