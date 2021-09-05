@@ -11,7 +11,6 @@ import com.kripto2021.hokkinon.playfair.*;
 import com.kripto2021.hokkinon.viginere.*;
 import java.awt.*;
 import java.io.*;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -22,7 +21,6 @@ import javax.swing.event.DocumentListener;
  */
 public class App extends javax.swing.JFrame {
     private File inputFile;
-    private Scanner fileReader;
     private ComboBoxItem chosenAlgorithm;
     
     private Playfair playfair = new Playfair("");
@@ -601,6 +599,7 @@ public class App extends javax.swing.JFrame {
         savePlainteksButton.setText("Save");
 
         uploadCipherteksButton.setText("Upload");
+        uploadCipherteksButton.setEnabled(false);
 
         encryptOrDecrypt.add(decryptRadioButton);
         decryptRadioButton.setText("decrypt");
@@ -717,16 +716,15 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             this.inputFile = null;
-            this.fileReader = null;
             
             this.uploadFile.showOpenDialog(this);
             this.inputFile = uploadFile.getSelectedFile();
-            System.out.println(this.inputFile.getPath());
-            System.out.println(this.inputFile.getAbsolutePath());
-            System.out.println(this.inputFile.getParent());
-            System.out.println(this.inputFile.getName());
             
-            this.fileReader = new Scanner(this.inputFile);
+            FileReader fr = new FileReader(this.inputFile);
+            char[] buf = new char[65535];
+            
+            fr.read(buf);
+            // System.out.println(String.valueOf(buf));
         }
         catch (Exception e) {
             
@@ -785,7 +783,6 @@ public class App extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        System.out.println("Hello world!");
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
