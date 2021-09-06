@@ -30,7 +30,7 @@ public class Affine {
     
     private static boolean validM(long m) {
         if (m == -1) return false;
-        if (Utils.moduloInverse(m, 26) == 1) return true;
+        if (Utils.GCD(m, 26) == 1) return true;
         return false;
     }
     
@@ -48,6 +48,8 @@ public class Affine {
                 m = -1;
         } catch (Exception e) {
             m = -1;
+        } finally {
+            if (!Affine.validM(m)) m = -1;
         }
 
         try {
