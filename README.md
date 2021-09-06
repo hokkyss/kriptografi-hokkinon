@@ -8,3 +8,5 @@
 - Open Project (a Maven Project) with your IDE
 - Run the project!
 - Enjoy!
+
+- You can also run this software by downloading the \*.jar file from [release](https://github.com/hokkyss/kriptografi-hokkinon/releases/tag/v1.0).
