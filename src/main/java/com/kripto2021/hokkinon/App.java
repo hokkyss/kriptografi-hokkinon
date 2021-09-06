@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -881,7 +882,10 @@ public class App extends javax.swing.JFrame {
             fis.close();
             
             this.plainFileContent = buffer;
+            plainteksTextArea.setText(new String(plainFileContent, StandardCharsets.ISO_8859_1));
+
             this.cipherFileContent = xviginere.encrypt(buffer, this.key.getText());
+            cipherteksTextArea.setText(new String(cipherFileContent, StandardCharsets.ISO_8859_1));
             // plainteksTextArea.setText(str);
         }
         catch (Exception e) {
@@ -904,7 +908,9 @@ public class App extends javax.swing.JFrame {
             fis.close();
 
             this.cipherFileContent = buffer;
+            cipherteksTextArea.setText(new String(cipherFileContent, StandardCharsets.ISO_8859_1));
             this.plainFileContent = xviginere.decrypt(buffer, this.key.getText());
+            plainteksTextArea.setText(new String(plainFileContent, StandardCharsets.ISO_8859_1));
             // this.cipherteksTextArea.setText(str);
         }
         catch (Exception e) {
