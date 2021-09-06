@@ -526,6 +526,33 @@ public class App extends javax.swing.JFrame {
         });
         popUpViginere.add(periodicKey);
 
+        scramble = new JButton();
+        scramble.setBounds(500, 0, 100, 25);
+        scramble.setText("Scramble");
+        scramble.setEnabled(true);
+        scramble.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viginere.randomize();
+                validateViginereMatrix();
+            }
+        });
+        popUpViginere.add(scramble);
+
+        refresh = new JButton();
+        refresh.setBounds(600, 0, 100, 25);
+        refresh.setText("Refresh");
+        refresh.setEnabled(true);
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viginere = new Viginere(26);
+                validateViginereMatrix();
+            }
+        });
+        popUpViginere.add(refresh);
+        isValidating = false;
+
         this.viginereMatrix = new JTextField[26][26];
         for(int i=0; i<26; i++){
             for(int j=0; j<26; j++) {
@@ -543,8 +570,10 @@ public class App extends javax.swing.JFrame {
                     }
                     @Override
                     public void changedUpdate(DocumentEvent e) {
-                        viginere.setMatrix(iCopy, jCopy, viginereMatrix[iCopy][jCopy].getText());
-                        validateViginereMatrix();
+                        if(!isValidating){
+                            viginere.setMatrix(iCopy, jCopy, viginereMatrix[iCopy][jCopy].getText());
+                            validateViginereMatrix();
+                        }
                     }
                 });
                 this.popUpViginere.add(this.viginereMatrix[i][j]);
@@ -1130,9 +1159,13 @@ public class App extends javax.swing.JFrame {
 
 
     private javax.swing.JTextField[][] viginereMatrix;
+    private javax.swing.JLabel[][] viginereLabel;
     private javax.swing.JButton periodicKey;
     private javax.swing.JButton autoKey;
     private javax.swing.JLabel isAutoKey;
+    private javax.swing.JButton refresh;
+    private javax.swing.JButton scramble;
+    private boolean isValidating;
     private Viginere viginere;
     private Viginere xviginere;
 
@@ -1172,6 +1205,7 @@ public class App extends javax.swing.JFrame {
     }
 
     public void validateViginereMatrix(){
+        isValidating = true;
         for (int i = 0; i < 26; i++) {
             for (int j = 0; j < 26; j++) {
                 if (!viginere.getValid()[i][j]) {
@@ -1182,11 +1216,13 @@ public class App extends javax.swing.JFrame {
                         viginereMatrix[i][j].setForeground(Color.RED);
                     }
                 } else {
+                    viginereMatrix[i][j].setText(String.valueOf(viginere.getMatrix()[i][j]));
                     viginereMatrix[i][j].setBackground(Color.WHITE);
                     viginereMatrix[i][j].setForeground(Color.BLACK);
                 }
             }
         }
+        isValidating = false;
     }
 
     public void validateEnigma(){

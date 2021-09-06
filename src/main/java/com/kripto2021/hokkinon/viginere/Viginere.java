@@ -32,6 +32,16 @@ public class Viginere {
         }
     }
 
+    public void randomize(){
+        for(int i=0; i<26; i++){
+            String str = Utils.randomPermutation();
+            for(int j=0; j<26; j++){
+                this.matrix[i][j] = str.charAt(j);
+                this.valid[i][j] = true;
+            }
+        }
+    }
+
     public void setMatrix(int i, int j, String val) {
         if(val.length() == 1) {
             char c = val.charAt(0);
@@ -67,7 +77,7 @@ public class Viginere {
         }
         return ret;
     }
-
+    public char[][] getMatrix(){ return this.matrix; }
     public boolean[][] getValid(){ return this.valid; }
     
     private byte encode(byte c, char key) {
