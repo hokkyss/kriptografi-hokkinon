@@ -934,6 +934,8 @@ public class App extends javax.swing.JFrame {
             // do nothing
         } catch (IOException ex) {
             // do nothing
+        }catch (Exception e){
+            // ignored
         }
     }
     
@@ -954,6 +956,8 @@ public class App extends javax.swing.JFrame {
             // do nothing
         } catch (IOException ex) {
             // do nothing
+        } catch (Exception e){
+            // ignored
         }
     }
     
