@@ -9,8 +9,6 @@ import com.kripto2021.hokkinon.affine.*;
 import com.kripto2021.hokkinon.enigma.*;
 import com.kripto2021.hokkinon.playfair.*;
 import com.kripto2021.hokkinon.viginere.*;
-import utils.Utils;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +16,7 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import utils.Utils;
 
 /**
  *
@@ -656,8 +655,18 @@ public class App extends javax.swing.JFrame {
         });
 
         saveCipherteksButton.setText("Save");
+        saveCipherteksButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveCipherteksButtonActionPerformed(evt);
+            }
+        });
 
         savePlainteksButton.setText("Save");
+        savePlainteksButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                savePlainteksButtonActionPerformed(evt);
+            }
+        });
 
         uploadCipherteksButton.setText("Upload");
         uploadCipherteksButton.addActionListener(new java.awt.event.ActionListener() {
@@ -806,8 +815,9 @@ public class App extends javax.swing.JFrame {
         }
         else this.decrypt();
     }//GEN-LAST:event_algorithmChoiceComboBoxActionPerformed
-
-    private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
+    
+    private final int MAXIMUM_FILE_SIZE = 1048576; /* 1MB */
+    private void uploadPlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         // TODO add your handling code here:
         try {
             this.inputFile = null;
@@ -815,21 +825,23 @@ public class App extends javax.swing.JFrame {
             this.uploadFile.showOpenDialog(this);
             this.inputFile = uploadFile.getSelectedFile();
             
-            FileReader fr = new FileReader(this.inputFile);
-            char[] buf = new char[1048576];
+            FileInputStream fis = new FileInputStream(this.inputFile);
             
-            fr.read(buf);
-            StringBuilder str = new StringBuilder();
-            for(int i=0; i<1048576 && buf[i]>0; i++){
-                str.append(buf[i]);
-            }
-            plainteksTextArea.setText(String.valueOf(str));
-            System.out.println(String.valueOf(str));
+            byte[] buffer = new byte[Math.min((int) this.inputFile.length(), MAXIMUM_FILE_SIZE)];
+            
+            fis.read(buffer);
+            StringBuilder ssss = new StringBuilder();
+            
+            fis.close();
+            
+            this.plainFileContent = buffer;
+            this.cipherFileContent = xviginere.encrypt(buffer, this.key.getText());
+            // plainteksTextArea.setText(str);
         }
         catch (Exception e) {
-            
+            System.out.println("exception");            
         }
-    }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
+    }                                                     
 
     private void uploadCipherteksButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPlainteksButtonActionPerformed
         // TODO add your handling code here:
@@ -838,23 +850,61 @@ public class App extends javax.swing.JFrame {
 
             this.uploadFile.showOpenDialog(this);
             this.inputFile = uploadFile.getSelectedFile();
+            
+            FileInputStream fis = new FileInputStream(this.inputFile);
+            
+            byte[] buffer = new byte[Math.min((int) this.inputFile.length(), MAXIMUM_FILE_SIZE)];
+            fis.read(buffer);
+            fis.close();
 
-            FileReader fr = new FileReader(this.inputFile);
-            char[] buf = new char[1048576];
-
-            fr.read(buf);
-            StringBuilder str = new StringBuilder();
-            for(int i=0; i<1048576 && buf[i]>0; i++){
-                str.append(buf[i]);
-            }
-            cipherteksTextArea.setText(String.valueOf(str));
-            System.out.println(String.valueOf(str));
+            this.cipherFileContent = buffer;
+            this.plainFileContent = xviginere.decrypt(buffer, this.key.getText());
+            // this.cipherteksTextArea.setText(str);
         }
         catch (Exception e) {
-
         }
     }//GEN-LAST:event_uploadPlainteksButtonActionPerformed
 
+    private void saveCipherteksButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        String filename;
+        
+        if (this.inputFile == null) filename = "encrypted.txt";
+        else filename = "encrypted-" + this.inputFile.getName();
+
+        File outputFile = new File(filename);
+        try {
+            outputFile.createNewFile();
+            
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            fos.write(cipherFileContent);
+            fos.close();
+        } catch (FileNotFoundException ex) {
+            // do nothing
+        } catch (IOException ex) {
+            // do nothing
+        }
+    }
+    
+    private void savePlainteksButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        String filename;
+        
+        if (this.inputFile == null) filename = "decrypted.txt";
+        else filename = "decrypted-" + this.inputFile.getName();
+
+        File outputFile = new File(filename);
+        try {
+            outputFile.createNewFile();
+            
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            fos.write(plainFileContent);
+            fos.close();
+        } catch (FileNotFoundException ex) {
+            // do nothing
+        } catch (IOException ex) {
+            // do nothing
+        }
+    }
+    
     private void onChangePlaintext(DocumentEvent e) {
         if (!this.isEncrypting) return;
         
@@ -942,9 +992,11 @@ public class App extends javax.swing.JFrame {
     }
     
     private void encrypt() {
+        String result = "";
+
         if(validateKey()){
             if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full") && viginere.isMatrixValid()){
-                String result = viginere.encrypt(
+                result = viginere.encrypt(
                         plainteksTextArea.getText(),
                         key.getText(),
                         !(autoKey.isEnabled()));
@@ -955,7 +1007,7 @@ public class App extends javax.swing.JFrame {
             }
             if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
                 EnigmaPath path = enigma.encrypt(plainteksTextArea.getText(), key.getText());
-                String result = path.result;
+                result = path.result;
                 if(seperated.isSelected()){
                     result = Utils.splitString(result);
                 }
@@ -963,49 +1015,55 @@ public class App extends javax.swing.JFrame {
                 refreshEnigmaPopup(path);
             }
             if(this.chosenAlgorithm.value().equalsIgnoreCase("extended viginere")){
-                cipherteksTextArea.setText(
-                        xviginere.encrypt(plainteksTextArea.getText(),
+                result = xviginere.encrypt(plainteksTextArea.getText(),
                         key.getText(),
-                        false));
+                        false);
+                cipherteksTextArea.setText(result);
             }
-        }
-        if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
-            String result = this.playfair.encrypt(this.plainteksTextArea.getText());
+        } else if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
+            result = this.playfair.encrypt(this.plainteksTextArea.getText());
             if(seperated.isSelected()){
                 result = Utils.splitString(result);
             }
             this.cipherteksTextArea.setText(result);
         } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
-            String result = this.affine.encrypt(this.plainteksTextArea.getText());
+            result = this.affine.encrypt(this.plainteksTextArea.getText());
             if(seperated.isSelected()){
                 result = Utils.splitString(result);
             }
             this.cipherteksTextArea.setText(result);
         }
+        // this.cipherFileContent = result;
     }
     
     private void decrypt() {
+        String result = "";
         if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
-            this.plainteksTextArea.setText(this.playfair.decrypt(this.cipherteksTextArea.getText()));
+            result = this.playfair.decrypt(this.cipherteksTextArea.getText());
+            this.plainteksTextArea.setText(result);
         } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
-            this.plainteksTextArea.setText(this.affine.decrypt(this.cipherteksTextArea.getText()));
+            result = this.affine.decrypt(this.cipherteksTextArea.getText());
+            this.plainteksTextArea.setText(result);
         } else if(validateKey()){
             if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full")){
-                plainteksTextArea.setText(viginere.decrypt(
+                result = viginere.decrypt(
                         cipherteksTextArea.getText(),
                         key.getText(),
-                        !(autoKey.isEnabled())));
+                        !(autoKey.isEnabled()));
+                plainteksTextArea.setText(result);
             }
             if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
                 EnigmaPath path = enigma.encrypt(cipherteksTextArea.getText(), key.getText());
-                plainteksTextArea.setText(path.result);
+                result = path.result;
+                plainteksTextArea.setText(result);
                 refreshEnigmaPopup(path);
             }
             if(this.chosenAlgorithm.value().equalsIgnoreCase("extended viginere")){
-                plainteksTextArea.setText(xviginere.decrypt(cipherteksTextArea.getText(), key.getText(), false));
-
+                result = xviginere.decrypt(cipherteksTextArea.getText(), key.getText(), false);
+                plainteksTextArea.setText(result);
             }
         }
+        // this.plainFileContent = result;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1086,8 +1144,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField[] mirrorPermutation;
     private Enigma enigma;
 
-    private String plainFileContent;
-    private String cipherFileContent;
+    private byte[] plainFileContent;
+    private byte[] cipherFileContent;
 
     
     private void setPlayfairKeys() {

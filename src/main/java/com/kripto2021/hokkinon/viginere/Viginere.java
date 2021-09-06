@@ -70,6 +70,10 @@ public class Viginere {
 
     public boolean[][] getValid(){ return this.valid; }
     
+    private byte encode(byte c, char key) {
+        return (byte)((int) this.matrix[key][(int)(c + 128)] - 128);
+    }
+    
     private char encode(char c, char key) {
         if (this.size != 256) {
             if ('A' <= c && c <= 'Z') return this.matrix[key - 'A'][c - 'A'];
@@ -78,7 +82,10 @@ public class Viginere {
             return this.matrix[key][c];
         }
     }
-    
+    private byte decode(byte c, char key) {
+        return (byte)((int) this.matrix[(256 - key) % 256][(int)(c + 128)] - 128);
+    }
+
     private char decode(char c, char key) {
         char[] row;
         
@@ -88,12 +95,22 @@ public class Viginere {
             if ('A' <= c && c <= 'Z') return (char) ((char) String.valueOf(row).indexOf(c) + 'A');
             return c;
         }
-        row = this.matrix[key];
-        return (char) String.valueOf(row).indexOf(c);
+        return this.matrix[(256 - key) % 256][c];
+    }
+    
+    public byte[] encrypt(byte[] plaintext, String key) {
+        byte[] result = new byte[plaintext.length];
+        
+        for(int i = 0; i < plaintext.length; i++) {
+            result[i] = this.encode(plaintext[i], key.charAt(i % key.length()));
+        }
+        
+        return result;
     }
 
     //Encrypt
     public String encrypt(String plaintext, String key, boolean isAutokey){
+        if (key.length() == 0) return "";
         StringBuilder plaintextCopy = new StringBuilder();
         StringBuilder result = new StringBuilder();
 
@@ -122,10 +139,18 @@ public class Viginere {
         return result.toString();
     }
     
-    public String decrypt(String ciphertext, String key, boolean isAutokey) {
-        StringBuilder result = new StringBuilder();
+    public byte[] decrypt(byte[] ciphertext, String key) {
+        byte[] result = new byte[ciphertext.length];
         
-
+        for(int i = 0; i < ciphertext.length; i++) {
+            result[i] = this.decode(ciphertext[i], key.charAt(i % key.length()));
+        }
+        
+        return result;
+    }
+    public String decrypt(String ciphertext, String key, boolean isAutokey) {
+        if (key.length() == 0) return "";
+        StringBuilder result = new StringBuilder();
         
         String upperCaseKey = key.toUpperCase();
         if(size!=256){
