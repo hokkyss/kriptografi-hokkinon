@@ -23,9 +23,10 @@ public class Enigma {
         mirror = new char[26];
         valid = new boolean[nbR+1][26];
 
-        String str = Utils.randomPermutation();
+        String str = Utils.randomPairing();
         for(int i=0; i<nbRotor; i++){
             for(int j=0; j<26; j++){
+                valid[i][j] = true;
                 rotor[i][j] = str.charAt(j);
             }
             str = Utils.randomPermutation();
@@ -39,8 +40,8 @@ public class Enigma {
 
     }
 
-    public void validateAll(){
-
+    public boolean validateAll(){
+        boolean result = true;
         for(int i=0; i<nbRotor; i++){
             for(int j=0; j<26; j++){
                 valid[i][j] = (rotor[i][j]>='A' && rotor[i][j]<='Z');
@@ -50,6 +51,7 @@ public class Enigma {
                     if(rotor[i][j] == rotor[i][k]){
                         valid[i][j] = false;
                         valid[i][k] = false;
+                        result = false;
                     }
                 }
             }
@@ -62,9 +64,11 @@ public class Enigma {
                 if(mirror[j] == mirror[k]){
                     valid[nbRotor][j] = false;
                     valid[nbRotor][k] = false;
+                    result = false;
                 }
             }
         }
+        return result;
     }
 
     public void setValue(int i, int j, String val){
@@ -94,10 +98,11 @@ public class Enigma {
         int[] bw = new int[nbRotor+1];
         int[] offset = new int[nbRotor+1];
         offset[nbRotor] = 0;
-        for(int i=nbRotor-1; i>=0; i--){
+        for(int i=nbRotor-1; i>0; i--){
             offset[i] = rotorItr % 26;
             rotorItr /= 26;
         }
+        offset[0] = 0;
         //Maju
         fw[0] = (c+offset[0]-'A')%26;
         for(int i=0; i<nbRotor; i++){

@@ -553,6 +553,20 @@ public class App extends javax.swing.JFrame {
         popUpViginere.add(refresh);
         isValidating = false;
 
+        viginereLabel = new JLabel[2][26];
+        for(int i=0; i<26; i++){
+            viginereLabel[0][i] = new JLabel();
+            viginereLabel[0][i].setText(String.valueOf((char)('A'+i)));
+            viginereLabel[0][i].setOpaque(true);
+            viginereLabel[0][i].setBounds(25*(i+2), 25, 25, 25);
+            popUpViginere.add(viginereLabel[0][i]);
+            viginereLabel[1][i] = new JLabel();
+            viginereLabel[1][i].setText(String.valueOf((char)('A'+i)));
+            viginereLabel[1][i].setOpaque(true);
+            viginereLabel[1][i].setBounds(25, 25*(i+2), 25, 25);
+            popUpViginere.add(viginereLabel[1][i]);
+        }
+
         this.viginereMatrix = new JTextField[26][26];
         for(int i=0; i<26; i++){
             for(int j=0; j<26; j++) {
@@ -597,17 +611,17 @@ public class App extends javax.swing.JFrame {
         );
 
 
-        enigma = new Enigma(3);
-        rotorLabel = new JLabel[3][26];
-        rotorPermutation = new JTextField[3][26];
+        enigma = new Enigma(4);
+        rotorLabel = new JLabel[4][26];
+        rotorPermutation = new JTextField[4][26];
         mirrorLabel = new JLabel[26];
         mirrorPermutation = new JTextField[26];
-        blueCable = new JLabel[3][3];
-        greenCable = new JLabel[3][3];
-        int paddingLeft = 100;
+        blueCable = new JLabel[4][3];
+        greenCable = new JLabel[4][3];
+        int paddingLeft = 0;
         int paddingTop = 25;
 
-        for(int i=0; i<3; i++){
+        for(int i=0; i<4; i++){
             for(int j=0; j<26; j++){
                 rotorLabel[i][j] = new JLabel();
                 rotorLabel[i][j].setBounds(paddingLeft + 150*i, paddingTop + 25*j, 25, 25);
@@ -632,6 +646,9 @@ public class App extends javax.swing.JFrame {
                         validateEnigma();
                     }
                 });
+                if(i==0){
+                    rotorPermutation[i][j].setEditable(false);
+                }
                 popUpEnigma.add(rotorPermutation[i][j]);
             }
             for(int j=0; j<3; j++){
@@ -649,12 +666,12 @@ public class App extends javax.swing.JFrame {
         }
         for(int i=0; i<26; i++){
             mirrorLabel[i] = new JLabel();
-            mirrorLabel[i].setBounds(paddingLeft + 450, paddingTop + 25*i, 25, 25);
+            mirrorLabel[i].setBounds(paddingLeft + 600, paddingTop + 25*i, 25, 25);
             mirrorLabel[i].setText(String.valueOf((char)('A'+i)));
             popUpEnigma.add(mirrorLabel[i]);
             mirrorPermutation[i] = new JTextField();
             mirrorPermutation[i].setEditable(false);
-            mirrorPermutation[i].setBounds(paddingLeft + 475, paddingTop + 25*i, 25, 25);
+            mirrorPermutation[i].setBounds(paddingLeft + 625, paddingTop + 25*i, 25, 25);
             mirrorPermutation[i].setText(String.valueOf(enigma.getMirror()[i]));
             int iCopy = i;
             mirrorPermutation[i].getDocument().addDocumentListener(new DocumentListener() {
@@ -1023,7 +1040,19 @@ public class App extends javax.swing.JFrame {
     private void encrypt() {
         String result = "";
 
-        if(validateKey()){
+        if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
+            result = this.playfair.encrypt(this.plainteksTextArea.getText());
+            if(seperated.isSelected()){
+                result = Utils.splitString(result);
+            }
+            this.cipherteksTextArea.setText(result);
+        } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
+            result = this.affine.encrypt(this.plainteksTextArea.getText());
+            if(seperated.isSelected()){
+                result = Utils.splitString(result);
+            }
+            this.cipherteksTextArea.setText(result);
+        }else if(validateKey()){
             if(this.chosenAlgorithm.value().equalsIgnoreCase("viginere full") && viginere.isMatrixValid()){
                 result = viginere.encrypt(
                         plainteksTextArea.getText(),
@@ -1034,7 +1063,7 @@ public class App extends javax.swing.JFrame {
                 }
                 cipherteksTextArea.setText(result);
             }
-            if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma") && enigma.validateAll()){
                 EnigmaPath path = enigma.encrypt(plainteksTextArea.getText(), key.getText());
                 result = path.result;
                 if(seperated.isSelected()){
@@ -1049,18 +1078,6 @@ public class App extends javax.swing.JFrame {
                         false);
                 cipherteksTextArea.setText(result);
             }
-        } else if (this.chosenAlgorithm.value().equalsIgnoreCase("playfair")) {
-            result = this.playfair.encrypt(this.plainteksTextArea.getText());
-            if(seperated.isSelected()){
-                result = Utils.splitString(result);
-            }
-            this.cipherteksTextArea.setText(result);
-        } else if (this.chosenAlgorithm.value().equalsIgnoreCase("affine")) {
-            result = this.affine.encrypt(this.plainteksTextArea.getText());
-            if(seperated.isSelected()){
-                result = Utils.splitString(result);
-            }
-            this.cipherteksTextArea.setText(result);
         }
         // this.cipherFileContent = result;
     }
@@ -1081,7 +1098,7 @@ public class App extends javax.swing.JFrame {
                         !(autoKey.isEnabled()));
                 plainteksTextArea.setText(result);
             }
-            if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma")){
+            if(this.chosenAlgorithm.value().equalsIgnoreCase("enigma") && enigma.validateAll()){
                 EnigmaPath path = enigma.encrypt(cipherteksTextArea.getText(), key.getText());
                 result = path.result;
                 plainteksTextArea.setText(result);
@@ -1226,7 +1243,7 @@ public class App extends javax.swing.JFrame {
     }
 
     public void validateEnigma(){
-        for(int i=0; i<3; i++){
+        for(int i=0; i<4; i++){
             for(int j=0; j<26; j++){
                 if(!enigma.getValid()[i][j]){
                     if(rotorPermutation[i][j].getText().length()==0){
@@ -1242,7 +1259,7 @@ public class App extends javax.swing.JFrame {
             }
         }
         for(int j=0; j<26; j++){
-            if(!enigma.getValid()[3][j]){
+            if(!enigma.getValid()[4][j]){
                 if(mirrorPermutation[j].getText().length()==0){
                     mirrorPermutation[j].setBackground(Color.RED);
                 }else{
@@ -1257,10 +1274,10 @@ public class App extends javax.swing.JFrame {
     }
 
     public void refreshEnigmaPopup(EnigmaPath path){
-        int paddingLeft = 100;
+        int paddingLeft = 0;
         int paddingTop = 25;
         if(path.result.equals("")){
-            for(int i=0; i<3; i++){
+            for(int i=0; i<4; i++){
                 for(int j=0; j<3; j++){
                     blueCable[i][j].setBounds(0,0,0,0);
                     greenCable[i][j].setBounds(0,0,0,0);
@@ -1270,7 +1287,7 @@ public class App extends javax.swing.JFrame {
                 }
             }
         }else{
-            for(int i=0; i<3; i++){
+            for(int i=0; i<4; i++){
                 blueCable[i][0].setBounds(paddingLeft+50 + i*150,paddingTop+10 + 25*path.forward[i], 30, 5);
                 blueCable[i][1].setBounds(paddingLeft+80 + i*150,
                         paddingTop+10 + 25*Math.min(path.forward[i], path.forward[i+1]),
